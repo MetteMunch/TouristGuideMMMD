@@ -1,0 +1,26 @@
+package com.example.touristguidemmmd.model;
+
+public enum Tag {
+    TEATER("Teater"),
+    RESTAURANT("Restaurant"),
+    KONCERT("Koncert"),
+    NATUR("Natur"),
+    MUSEUM("Museum"),
+    SPORT("Sport"),
+    PARK("Park"),
+    FORLYSTELSE("Forlystelse"),
+    DESIGN("Desing"),
+    ARKITEKTUR("Arkitektur"),
+    MONUMENTER("Monumenter");
+
+
+    private String displayName;
+
+    Tag(String displayName) { //Enum constructor må ikke være public
+        this.displayName = displayName;
+    }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+    }
