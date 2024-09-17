@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+@Service // annotation som fortæller Spring, at denne klasse styrer / servicerer forretningslogik
 public class TouristService {
 
     private TouristRepository tr;

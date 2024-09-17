@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="https://www.thymeleaf.org"> <!--her angives at vi arbejder med thymeleaf og prefix th skal anvendes, når der skal kaldes attributter-->
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Liste med attractioner</h1>
+
+<ul>
+  <li th:each="attraction : ${listOfAttractions}">
+    <div th:text="${attraction.name}"></div>
+    <div th:text="${attraction.getDescription()}"></div>
+  </li>
+</ul>
+
+</body>
+</html>

@@ -4,6 +4,7 @@ public class TouristAttraction {
     private String name;
     private String description;
 
+
     public TouristAttraction(String name, String description){
         this.name = name;
         this.description = description;
@@ -26,6 +27,6 @@ public class TouristAttraction {
 
     @Override
     public String toString(){
-        return name + description;
+        return name + " "+ description;
     }
 }

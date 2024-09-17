@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 
-@Repository
+@Repository // annotation som fortæller Spring, at denne klasse har ansvar for adgang til data (fx databaseadministration)
 public class TouristRepository {
 
     private List<TouristAttraction> touristRepository = new ArrayList<>();
