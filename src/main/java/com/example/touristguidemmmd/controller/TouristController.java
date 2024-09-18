@@ -14,7 +14,7 @@ import java.util.List;
 
 public class TouristController {
 
-    private TouristService ts;
+    private final TouristService ts;
 
     public TouristController(TouristService ts){
         this.ts = ts;

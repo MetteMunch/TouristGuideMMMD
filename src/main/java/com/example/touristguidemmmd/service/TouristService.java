@@ -9,7 +9,7 @@ import java.util.List;
 @Service // annotation som fortæller Spring, at denne klasse styrer / servicerer forretningslogik
 public class TouristService {
 
-    private TouristRepository tr;
+    private final TouristRepository tr;
 
     public TouristService(TouristRepository tr) {
         this.tr = tr;
