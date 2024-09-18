@@ -19,7 +19,7 @@ public class TouristRepository {
     public void addHardcodetDataTilListe() {
         touristRepository.add(new TouristAttraction("Tivoli", "Forlystelsespark i centrum af KBH"));
         touristRepository.add(new TouristAttraction("Frederiksberg Have", "Åben park midt på Frederiksberg"));
-        touristRepository.add(new TouristAttraction("Københavns Museum", "Museum i KBH der dækker over københavns historie"));;
+        touristRepository.add(new TouristAttraction("Københavns Museum", "Museum i KBH der dækker over københavns historie"));
     }
 
     public void addTouristAttraction(String name, String description) {

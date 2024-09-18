@@ -27,13 +27,5 @@ public class TouristController {
         return "attractionList";
     }
 
-
-
-
-
-
-
-
-
     //@PostMapping //annotation der bruges til at specificere hvilken url der skal kaldes ved håndtering af en HTTP-POST-request (fx sende data via formular til server eller andet)
 }

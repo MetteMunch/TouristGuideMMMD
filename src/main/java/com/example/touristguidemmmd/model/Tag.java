@@ -14,7 +14,7 @@ public enum Tag {
     MONUMENTER("Monumenter");
 
 
-    private String displayName;
+    private final String displayName;
 
     Tag(String displayName) { //Enum constructor må ikke være public
         this.displayName = displayName;
