@@ -9,7 +9,7 @@ import java.util.List;
 @Repository // annotation som fortæller Spring, at denne klasse har ansvar for adgang til data (fx databaseadministration)
 public class TouristRepository {
 
-    private List<TouristAttraction> touristRepository = new ArrayList<>();
+    private final List<TouristAttraction> touristRepository = new ArrayList<>();
 
     public TouristRepository() {
         addHardcodetDataTilListe();

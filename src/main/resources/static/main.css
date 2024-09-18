@@ -1,0 +1,33 @@
+/* Generelle tabelindstillinger */
+table {
+    width: 100%;
+    border-collapse: collapse; /* Sørger for, at cellernes grænser er sammenhængende */
+    margin: 20px 0; /* Tilføjer lidt margin over og under tabellen */
+}
+
+/* Tilføjer borders til hele tabellen */
+table, th, td {
+    border: 1px solid black;
+}
+
+/* Justerer cellernes padding for at give mere plads i dem */
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+/* Gør tabelhovedet lidt mere tydeligt */
+th {
+    background-color: #f2f2f2; /* Lys grå baggrund til headeren */
+    font-weight: bold;
+}
+
+/* Gør skiftevis rækker forskellige farver for bedre læsbarhed */
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Tilføjer lidt hover-effekt på rækkerne */
+tr:hover {
+    background-color: #e2e2e2; /* Lysere grå ved hover */
+}

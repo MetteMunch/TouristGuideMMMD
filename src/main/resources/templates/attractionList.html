@@ -5,16 +5,30 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="/main.css">
 </head>
 <body>
-<h1>Liste med attractioner</h1>
+<h1>Liste med attraktioner</h1>
+<table>
+    <thead>
+    <tr><!-- tr betyder en række af celler i en tabel-->
+        <th>Navn</th> <!-- th angiver indhold af hver celle i øverste række af tabellen-->
+        <th>Beskrivelse</th>
+    </tr>
+    </thead>
+    <tbody th:each="attraction : ${listOfAttractions}">
+    <tr><!-- her kommer næste række i tabellen-->
+        <td th:text="${attraction.name}"></td> <!-- td angiver indhold af hver celle-->
+        <td th:text="${attraction.getDescription()}"></td> <!-- td angiver indhold af hver celle-->
+        <td>
+            <form action="/tags.html" method="get">
+                <button type="submit">Tags</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
 
-<ul>
-  <li th:each="attraction : ${listOfAttractions}">
-    <div th:text="${attraction.name}"></div>
-    <div th:text="${attraction.getDescription()}"></div>
-  </li>
-</ul>
 
 </body>
 </html>
