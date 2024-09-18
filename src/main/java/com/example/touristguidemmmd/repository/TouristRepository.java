@@ -1,5 +1,6 @@
 package com.example.touristguidemmmd.repository;
 
+import com.example.touristguidemmmd.model.Tag;
 import com.example.touristguidemmmd.model.TouristAttraction;
 import org.springframework.stereotype.Repository;
 
@@ -17,17 +18,27 @@ public class TouristRepository {
 
     /////////////////////CRUD/////////////////////
     public void addHardcodetDataTilListe() {
-        touristRepository.add(new TouristAttraction("Tivoli", "Forlystelsespark i centrum af KBH"));
-        touristRepository.add(new TouristAttraction("Frederiksberg Have", "Åben park midt på Frederiksberg"));
-        touristRepository.add(new TouristAttraction("Københavns Museum", "Museum i KBH der dækker over københavns historie"));
+        touristRepository.add(new TouristAttraction("Tivoli", "Forlystelsespark i centrum af KBH", "København", List.of(Tag.FORLYSTELSE, Tag.PARK, Tag.RESTAURANT)));
+        touristRepository.add(new TouristAttraction("Frederiksberg Have", "Åben park midt på Frederiksberg", "Frederiksberg", List.of(Tag.PARK, Tag.NATUR)));
+        touristRepository.add(new TouristAttraction("Københavns Museum", "Museum i KBH der dækker over københavns historie", "København", List.of(Tag.MUSEUM)));
     }
 
-    public void addTouristAttraction(String name, String description) {
-        touristRepository.add(new TouristAttraction(name, description));
+    public void addTouristAttraction(String name, String description, String by, List<Tag> tags) {
+        touristRepository.add(new TouristAttraction(name, description, by, tags));
     }
 
     public List<TouristAttraction> getFullTouristRepository() {
         return touristRepository;
+    }
+
+    public List<Tag> getListOfTags(String name){
+        for (TouristAttraction t : touristRepository){
+            if(t.getName().equalsIgnoreCase(name)){
+                return t.getTagListe();
+            }
+        }
+        return null;
+
     }
 
     public TouristAttraction getByNameTouristRepository(String name) {

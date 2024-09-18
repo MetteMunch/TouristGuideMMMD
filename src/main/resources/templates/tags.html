@@ -8,7 +8,22 @@
     <link rel="stylesheet" href="/main.css">
 </head>
 <body>
-<h1>Liste med tags</h1>
+<h1 th:text="${attractionName}"></h1>
+
+<table>
+    <thead>
+    <tr><!-- tr betyder en række af celler i en tabel-->
+        <th>Tags</th> <!-- th angiver indhold af hver celle i øverste række af tabellen-->
+    </tr>
+    </thead>
+    <tbody th:each="tag : ${tagListe}">
+    <tr><!-- her kommer næste række i tabellen-->
+        <td th:text="${tag}"></td> <!-- td angiver indhold af hver celle-->
+
+    </tr>
+    </tbody>
+
+</table>
 
 </body>
 </html>

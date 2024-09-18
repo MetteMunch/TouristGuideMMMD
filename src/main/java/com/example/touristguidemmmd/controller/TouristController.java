@@ -1,5 +1,6 @@
 package com.example.touristguidemmmd.controller;
 
+import com.example.touristguidemmmd.model.Tag;
 import com.example.touristguidemmmd.model.TouristAttraction;
 import com.example.touristguidemmmd.service.TouristService;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,14 @@ public class TouristController {
         List<TouristAttraction> fullListOfAttractions = ts.getListOfAttractions();
         model.addAttribute("listOfAttractions",fullListOfAttractions);
         return "attractionList";
+    }
+    @GetMapping("/{name}/tags") //denne metode kaldes ved URL attractions/Tivoli/tags
+    public String showTagsOnSpecificAttraction(@PathVariable String name, Model model){ //Hvad er forskellen på PathVariable og RequestVariable?
+        List<Tag> tagListe = ts.getListOfTags(name);
+        model.addAttribute("tagListe",tagListe);
+        model.addAttribute("attractionName",name);
+        return "tags"; //HTML filen der skal læses
+
     }
 
     //@PostMapping //annotation der bruges til at specificere hvilken url der skal kaldes ved håndtering af en HTTP-POST-request (fx sende data via formular til server eller andet)

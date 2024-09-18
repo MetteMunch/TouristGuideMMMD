@@ -1,5 +1,6 @@
 package com.example.touristguidemmmd.service;
 
+import com.example.touristguidemmmd.model.Tag;
 import com.example.touristguidemmmd.model.TouristAttraction;
 import com.example.touristguidemmmd.repository.TouristRepository;
 import org.springframework.stereotype.Service;
@@ -16,11 +17,15 @@ public class TouristService {
     }
 
     ////////////////////CRUD//////////////////////////////
-    public void addTouristAttraction(String name, String description) {
-        tr.addTouristAttraction(name, description);
+    public void addTouristAttraction(String name, String description, String by, List<Tag> tags) {
+        tr.addTouristAttraction(name, description, by, tags);
     }
     public List<TouristAttraction> getListOfAttractions() {
         return tr.getFullTouristRepository();
+    }
+
+    public List<Tag> getListOfTags(String name){
+        return tr.getListOfTags(name);
     }
     public TouristAttraction getSpecificTouristAttraction(String name) {
         return tr.getByNameTouristRepository(name);

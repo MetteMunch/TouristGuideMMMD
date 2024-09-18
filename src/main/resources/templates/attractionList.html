@@ -21,7 +21,7 @@
         <td th:text="${attraction.name}"></td> <!-- td angiver indhold af hver celle-->
         <td th:text="${attraction.getDescription()}"></td> <!-- td angiver indhold af hver celle-->
         <td>
-            <form action="/tags.html" method="get">
+            <form th:action="@{attractions/{attractionName}/tags(attractionName=${attraction.name})}" method="get">
                 <button type="submit">Tags</button>
             </form>
         </td>
