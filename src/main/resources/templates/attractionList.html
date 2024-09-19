@@ -25,16 +25,21 @@
         <td th:text="${attraction.getDescription()}"></td> <!-- td angiver indhold af hver celle-->
         <td>
             <div> <!-- Alle knapper "wrappes" i divs, så det sikres, at knapperne stables vertikalt ovenover hinanden. -->
-            <form th:action="@{attractions/{attractionName}/edit(attractionName=${attraction.name})}" method = get>
+            <form th:action="@{attractions/{attractionName}/edit(attractionName=${attraction.name})}" method = "get">
                 <button type="submit">Opdater</button>
             </form>
             </div>
 
             <div>
-            <form th:action="@{attractions/delete/{attractionName}(attractionName=${attraction.name})}" method="post">
+            <form th:action="@{attractions/delete/{attractionName}(attractionName=${attraction.name})}" method="post" onsubmit="return confirmDeletion()">
                 <button type="submit">Slet</button>
             </form>
             </div>
+            <script>
+                function confirmDeletion() {
+                    return confirm("Are you sure you want to delete?")
+                }
+            </script>
 
             <div>
             <a th:href="@{attractions/{attractionName}/tags(attractionName=${attraction.name})}" method="get">
