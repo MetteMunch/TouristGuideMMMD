@@ -40,6 +40,7 @@ public class TouristController {
         TouristAttraction attraction = ts.getSpecificTouristAttraction(name);
         model.addAttribute("description",attraction.getDescription());
         model.addAttribute("by",attraction.getBy());
+        model.addAttribute("byListe",List.of("København","Frederiksberg","Aarhus","Odense","Aalborg"));
         model.addAttribute("tagListe",attraction.getTagListe());
         model.addAttribute("allPossibleTags",Tag.values());
         return "updateAttraction";

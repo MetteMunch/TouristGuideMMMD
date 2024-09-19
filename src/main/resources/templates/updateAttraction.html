@@ -11,32 +11,35 @@
 </head>
 <body>
 <h1>Ændrng af informationer</h1>
-<form action="/attractions/update" method="post">
+<form action="/attractions/update" method="post"> <!--Formularen er oprette med POST-metoden, dvs. når
+ vi sender ændringer, så vil de blive håndteret af POST-metoden i controleren-->
+
   <!-- Skjult inputfelt til name, så vi får navn med over, men skal ikke kunne ændres -->
-  <input type="hidden" id="name" name="name" value="${name}">
+  <input type="hidden" id="name" name="name" th:value="${name}"> <!--det er værdierne som står i value felterne som sendes
+   til POST metoden i controlleren koblet med hvilken variable de udgør (name)-->
 
 
   <!-- felt til Beskrivelse -->
   <label for="description">Beskrivelse:</label>
-  <input type="text" id="description" name="description" value="${description}">
+  <input type="text" id="description" name="description" th:value="${description}"> <!--th:value sikrer at allerede angivet beskrivelse vises -->
   <br><br>
 
   <!-- Dropdown / selectbox felt til angivelse af by. Lige nu med fem forskellige muligheder -->
-  <label for="by">By:</label>
-  <select id="by" name="by">
-    <option value="København" ${by == 'København' ? 'selected' : ''}>København</option>
-    <option value="Frederiksberg" ${by == 'Frederiksberg' ? 'selected' : ''}>Frederiksberg</option>
-    <option value="Aarhus" ${by == 'Aarhus' ? 'selected' : ''}>Aarhus</option>
-    <option value="Odense" ${by == 'Odense' ? 'selected' : ''}>Odense</option>
-    <option value="Aalborg" ${by == 'Aalborg' ? 'selected' : ''}>Aalborg</option>
+  <label for="byBox">By:</label>
+  <select id="byBox" name="by">
+    <option th:each="byItem : ${byListe}"
+    th:value="${byItem}"
+    th:text="${byItem}"
+    th:selected="${byItem == by}">  <!-- Gør nuværende by til den forudvalgte mulighed -->
+    </option>
   </select>
   <br><br>
 
   <!-- Checkboxe til Tags -->
   <label>Tags:</label><br>
-  <div th:each="tag : ${tagListe}">
+  <div th:each="tag : ${allPossibleTags}">
     <input type="checkbox" th:id="${tag}" th:name="tagListe" th:value="${tag}"
-           th:checked="${tagListe.contains(tag)}">
+           th:checked="${tagListe.contains(tag)}"> <!--denne sikrer at allerede valgte tags vises -->
     <label th:for="${tag}">[[${tag.displayName}]]</label><br>
   </div>
 
