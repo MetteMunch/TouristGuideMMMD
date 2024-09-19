@@ -80,6 +80,7 @@ public class TouristController {
     public String getSpecificHtml(@PathVariable String name) {
         TouristAttraction ta = ts.getSpecificTouristAttraction(name);
         String getHtml = ta.getName().strip().toLowerCase();
+//        String getHtml = ta.getName().replaceAll("\\s+", "").toLowerCase();
         System.out.println(getHtml);
         return getHtml;
     }
