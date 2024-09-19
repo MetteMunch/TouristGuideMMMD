@@ -50,10 +50,12 @@ public class TouristRepository {
         return null;
     }
 
-    public void updateAttraction(String name,String description) {
+    public void updateAttraction(String name,String description, String by, List<Tag> tagListe) {
         for (TouristAttraction t : touristRepository) {
             if (name.equalsIgnoreCase(t.getName())) {
                 t.setDescription(description);
+                t.setBy(by);
+                t.setTagListe(tagListe);
             }
         }
     }

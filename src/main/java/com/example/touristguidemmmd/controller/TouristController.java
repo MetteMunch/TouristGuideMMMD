@@ -35,6 +35,23 @@ public class TouristController {
         return "tags"; //HTML filen der skal læses
 
     }
+    @GetMapping("/{name}/edit")
+    public String goToEditAttraction(@PathVariable String name, Model model){
+        TouristAttraction attraction = ts.getSpecificTouristAttraction(name);
+        model.addAttribute("description",attraction.getDescription());
+        model.addAttribute("by",attraction.getBy());
+        model.addAttribute("tagListe",attraction.getTagListe());
+        model.addAttribute("allPossibleTags",Tag.values());
+        return "updateAttraction";
+    }
 
-    //@PostMapping //annotation der bruges til at specificere hvilken url der skal kaldes ved håndtering af en HTTP-POST-request (fx sende data via formular til server eller andet)
+    @PostMapping("/update") //annotation der bruges til at specificere hvilken url der skal kaldes ved håndtering af en HTTP-POST-request (fx sende data via formular til server eller andet)
+    public String updateAttraction(@RequestParam String name, @RequestParam String description, @RequestParam String by, @RequestParam List<Tag> tagListe){
+        ts.updateAttraction(name, description, by, tagListe);
+        return "redirect:/attractions";
+
+
+    }
+
+
 }

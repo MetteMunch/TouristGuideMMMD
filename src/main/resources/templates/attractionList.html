@@ -4,7 +4,10 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--denne meta-tag sørger for reponsiv visning. Ved at sætte bredde lig med device bredde
+    sikres det at bredden af visning bliver det samme som bredden af skærmen. Initial-scale settingen sørger for, at siden ikke starter zoomet ind eller ud, men starter
+    i oprindelig skala i forhold til enhedens skærmopløsning.-->
+    <title>attractionList</title>
     <link rel="stylesheet" href="/main.css">
 </head>
 <body>
@@ -21,14 +24,21 @@
         <td th:text="${attraction.name}"></td> <!-- td angiver indhold af hver celle-->
         <td th:text="${attraction.getDescription()}"></td> <!-- td angiver indhold af hver celle-->
         <td>
+            <form th:action="@{attractions/{attractionName}/edit(attractionName=${attraction.name})}" method = get>
+            <button type="submit">Opdater</button>
+            </form>
+
+            <button type="button">Slet</button>
+
             <form th:action="@{attractions/{attractionName}/tags(attractionName=${attraction.name})}" method="get">
                 <button type="submit">Tags</button>
             </form>
+
         </td>
     </tr>
     </tbody>
 </table>
-
+<button type="button">Tilføj attraktion</button>
 
 </body>
 </html>

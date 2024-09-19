@@ -31,8 +31,8 @@ public class TouristService {
         return tr.getByNameTouristRepository(name);
     }
 
-    public void updateAttraction(String name, String description){
-        tr.updateAttraction(name, description);
+    public void updateAttraction(String name, String description, String by,List<Tag> tagListe){
+        tr.updateAttraction(name, description, by, tagListe);
     }
 
     public String getDescription(String name){

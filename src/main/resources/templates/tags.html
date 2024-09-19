@@ -4,6 +4,9 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--denne meta-tag sørger for reponsiv visning. Ved at sætte bredde lig med device bredde
+    sikres det at bredden af visning bliver det samme som bredden af skærmen. Initial-scale settingen sørger for, at siden ikke starter zoomet ind eller ud, men starter
+    i oprindelig skala i forhold til enhedens skærmopløsning.-->
     <title>tags</title>
     <link rel="stylesheet" href="/main.css">
 </head>
@@ -24,6 +27,9 @@
     </tbody>
 
 </table>
+<form th:action="@{/attractions}" method="get">
+    <button type="submit">Tilbage</button>
+</form>
 
 </body>
 </html>

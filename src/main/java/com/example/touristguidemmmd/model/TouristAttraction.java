@@ -44,6 +44,10 @@ public class TouristAttraction {
         return tagListe;
     }
 
+    public void setTagListe(List<Tag> tagListe){
+        this.tagListe = tagListe;
+    }
+
 
 
 
