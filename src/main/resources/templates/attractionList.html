@@ -24,21 +24,28 @@
         <td th:text="${attraction.name}"></td> <!-- td angiver indhold af hver celle-->
         <td th:text="${attraction.getDescription()}"></td> <!-- td angiver indhold af hver celle-->
         <td>
+            <div> <!-- Alle knapper "wrappes" i divs, så det sikres, at knapperne stables vertikalt ovenover hinanden. -->
             <form th:action="@{attractions/{attractionName}/edit(attractionName=${attraction.name})}" method = get>
                 <button type="submit">Opdater</button>
             </form>
+            </div>
 
+            <div>
             <form th:action="@{attractions/delete/{attractionName}(attractionName=${attraction.name})}" method="post">
-                <button type="button">Slet</button>
+                <button type="submit">Slet</button>
             </form>
+            </div>
 
-            <form th:action="@{attractions/{attractionName}/tags(attractionName=${attraction.name})}" method="get">
-                <button type="button">Tags</button>
-            </form>
-            <form th:action="@{attractions/{attractionName}/(attractionName=${attraction.name})}" method="get">
-                <button type="submit">Get html</button>
-            </form>
-            <a th:href="@{attractions/{attractionName}(attractionName=${attraction.name})}">Get html 2</a>
+            <div>
+            <a th:href="@{attractions/{attractionName}/tags(attractionName=${attraction.name})}" method="get">
+                <button>Tags</button>
+            </a>
+            </div>
+
+            <div>
+            <a th:href="@{attractions/{attractionName}(attractionName=${attraction.name})}"><button>See more information</button>
+            </a>
+            </div>
 
         </td>
     </tr>
