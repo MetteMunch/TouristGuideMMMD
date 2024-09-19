@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -50,9 +52,23 @@ public class TouristController {
     public String updateAttraction(@RequestParam String name, @RequestParam String description, @RequestParam String by, @RequestParam List<Tag> tagListe){
         ts.updateAttraction(name, description, by, tagListe);
         return "redirect:/attractions";
-
-
     }
+
+    @GetMapping("/add")
+    public String addAttraction(Model model) {
+        List<Tag> tagsToPresent = new ArrayList<>();
+        Collections.addAll(tagsToPresent, Tag.values());
+        model.addAttribute("allTags", tagsToPresent);
+        model.addAttribute("byListe",List.of("København","Frederiksberg","Aarhus","Odense","Aalborg"));
+        return "addAttraction";
+    }
+
+    @PostMapping("/save") //annotation der bruges til at specificere hvilken url der skal kaldes ved håndtering af en HTTP-POST-request (fx sende data via formular til server eller andet)
+    public String saveAttraction(@RequestParam String name, @RequestParam String description, @RequestParam String by, @RequestParam List<Tag> tagListe){
+        ts.addTouristAttraction(name, description, by, tagListe);
+        return "redirect:/attractions";
+    }
+
 
 
 }

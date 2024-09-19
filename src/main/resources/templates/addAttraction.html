@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--denne meta-tag sørger for reponsiv visning. Ved at sætte bredde lig med device bredde
+    sikres det at bredden af visning bliver det samme som bredden af skærmen. Initial-scale settingen sørger for, at siden ikke starter zoomet ind eller ud, men starter
+    i oprindelig skala i forhold til enhedens skærmopløsning.-->
+    <title>Add Attraction</title>
+    <link rel="stylesheet" href="/main.css">
+</head>
+<body>
+<h1>Add Attraction</h1>
+<form action="/attractions/save" method="post"> <!--Formularen er oprette med POST-metoden, dvs. når
+ vi sender ændringer, så vil de blive håndteret af POST-metoden i controleren-->
+
+    <!-- Skjult inputfelt til name, så vi får navn med over, men skal ikke kunne ændres -->
+    <label for="name">Navn</label>
+    <input type="text" id="name" name="name" th:value="${name}"> <!--det er værdierne som står i value felterne som sendes
+   til POST metoden i controlleren koblet med hvilken variable de udgør (name)-->
+
+
+    <!-- felt til Beskrivelse -->
+    <label for="description">Beskrivelse:</label>
+    <input type="text" id="description" name="description" th:value="${description}"> <!--th:value sikrer at allerede angivet beskrivelse vises -->
+    <br><br>
+
+    <!-- Dropdown / selectbox felt til angivelse af by. Lige nu med fem forskellige muligheder, se i controlleren -->
+    <label for="byBox">By:</label>
+    <select id="byBox" name="by">
+        <option th:each="byItem : ${byListe}"
+                th:value="${byItem}"
+                th:text="${byItem}">
+        </option>
+    </select>
+    <br><br>
+
+    <!-- Checkboxe til Tags -->
+    <label>Tags:</label><br>
+    <div th:each="tag : ${allTags}">
+        <label>
+            <input type="checkbox" th:id="${tag.name()}" th:name="tagListe" th:value="${tag.name()}">
+        </label>
+        <label th:for="${tag}">[[${tag.displayName}]]</label><br>
+    </div>
+
+    <!-- Ok og fortryd knapper -->
+    <button type="submit">Ok</button>
+    <button type="button" onclick="window.location.href='/attractions'">Fortryd</button>
+
+
+</form>
+
+</body>
+</html>
