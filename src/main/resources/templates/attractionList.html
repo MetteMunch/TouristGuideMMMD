@@ -25,16 +25,20 @@
         <td th:text="${attraction.getDescription()}"></td> <!-- td angiver indhold af hver celle-->
         <td>
             <form th:action="@{attractions/{attractionName}/edit(attractionName=${attraction.name})}" method = get>
-            <button type="submit">Opdater</button>
+                <button type="submit">Opdater</button>
             </form>
 
             <form th:action="@{attractions/delete/{attractionName}(attractionName=${attraction.name})}" method="post">
-                <button type="submit">Slet</button>
+                <button type="button">Slet</button>
             </form>
 
             <form th:action="@{attractions/{attractionName}/tags(attractionName=${attraction.name})}" method="get">
-                <button type="submit">Tags</button>
+                <button type="button">Tags</button>
             </form>
+            <form th:action="@{attractions/{attractionName}/(attractionName=${attraction.name})}" method="get">
+                <button type="submit">Get html</button>
+            </form>
+            <a th:href="@{attractions/{attractionName}(attractionName=${attraction.name})}">Get html 2</a>
 
         </td>
     </tr>
