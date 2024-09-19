@@ -28,7 +28,9 @@
             <button type="submit">Opdater</button>
             </form>
 
-            <button type="button">Slet</button>
+            <form th:action="@{attractions/delete/{attractionName}(attractionName=${attraction.name})}" method="post">
+                <button type="submit">Slet</button>
+            </form>
 
             <form th:action="@{attractions/{attractionName}/tags(attractionName=${attraction.name})}" method="get">
                 <button type="submit">Tags</button>
