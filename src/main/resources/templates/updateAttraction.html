@@ -24,7 +24,7 @@
   <input type="text" id="description" name="description" th:value="${description}"> <!--th:value sikrer at allerede angivet beskrivelse vises -->
   <br><br>
 
-  <!-- Dropdown / selectbox felt til angivelse af by. Lige nu med fem forskellige muligheder -->
+  <!-- Dropdown / selectbox felt til angivelse af by. Lige nu med fem forskellige muligheder, se i controlleren -->
   <label for="byBox">By:</label>
   <select id="byBox" name="by">
     <option th:each="byItem : ${byListe}"
@@ -38,8 +38,10 @@
   <!-- Checkboxe til Tags -->
   <label>Tags:</label><br>
   <div th:each="tag : ${allPossibleTags}">
-    <input type="checkbox" th:id="${tag}" th:name="tagListe" th:value="${tag}"
-           th:checked="${tagListe.contains(tag)}"> <!--denne sikrer at allerede valgte tags vises -->
+    <label>
+      <input type="checkbox" th:id="${tag.name()}" th:name="tagListe" th:value="${tag.name()}"
+             th:checked="${tagListe.contains(tag)}"> <!--denne sikrer at allerede valgte tags vises -->
+    </label>
     <label th:for="${tag}">[[${tag.displayName}]]</label><br>
   </div>
 
@@ -48,9 +50,7 @@
   <button type="button" onclick="window.location.href='/'">Fortryd</button>
 
 
-
 </form>
-
 
 </body>
 </html>
