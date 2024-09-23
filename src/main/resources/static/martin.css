@@ -28,11 +28,11 @@ body {
         margin: 0 auto;
         grid-template-areas:
             'header header header' /* Headeren fylder alle kolonner */
-            'main main main' /* Navigation til venstre, hovedindhold i midt, billede til højre */
+            'nav main imgbil' /* Navigation til venstre, hovedindhold i midt, billede til højre */
             'empty empty form' /* Google Maps til venstre, Form til højre */
             'footer footer footer'; /* Foderen fylder alle kolonner */
-        grid-template-columns: 1fr; /* Tre kolonner: nav er 15em bred, main fylder 1fr, imgbil fylder 1fr */
-        grid-template-rows: auto 1fr auto auto auto; /* Højden på rækkerne */
+        grid-template-columns: 15em 1fr 30em; /* Tre kolonner: nav er 15em bred, main fylder 1fr, imgbil fylder 1fr */
+        grid-template-rows: auto 1fr auto auto; /* Højden på rækkerne */
     }
 }
 
