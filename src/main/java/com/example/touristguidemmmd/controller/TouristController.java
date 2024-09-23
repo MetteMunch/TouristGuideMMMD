@@ -56,8 +56,8 @@ public class TouristController {
         model.addAttribute("attractionName",name);
         model.addAttribute("description",ta.getDescription());
         model.addAttribute("tagsOnAttraction",ta.getTagListe());
-        String htmlToReturn = ta.getName().toLowerCase();
-        return htmlToReturn;
+        model.addAttribute("city",ta.getBy());
+        return "showAttraction";
     }
 
     @PostMapping("/update") //annotation der bruges til at specificere hvilken url der skal kaldes ved håndtering af en HTTP-POST-request (fx sende data via formular til server eller andet)
@@ -87,17 +87,5 @@ public class TouristController {
         ts.deleteAttraction(ta);
         return "redirect:/attractions";
     }
-
-    @GetMapping("/{name}")
-    public String getSpecificHtml(@PathVariable String name) {
-        TouristAttraction ta = ts.getSpecificTouristAttraction(name);
-//        String getHtml = ta.getName().strip().toLowerCase();
-        String getHtml = ta.getName().replaceAll("\\s+", "").toLowerCase();
-
-        System.out.println(getHtml);
-        return getHtml;
-    }
-
-
 
 }

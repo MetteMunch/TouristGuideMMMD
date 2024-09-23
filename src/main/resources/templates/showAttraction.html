@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Turistattraktioner i København</title>
+  <link rel="stylesheet" href="/martin.css">
+</head>
+<body>
+<header>
+  <h1 th:text="${attractionName}"></h1>
+</header>
+<nav>
+  <h3>Tags</h3>
+  <ul>
+    <li th:each="tag : ${tagsOnAttraction}" th:text="${tag}"></li>
+  </ul>
+
+  <h3>By</h3>
+  <ul>
+    <li th:text="${city}"></li>
+  </ul>
+
+</nav>
+<main>
+  <h2 th:text="${attractionName}"></h2>
+  <p th:text="${description}"></p>
+</main>
+<imgbil>
+  <img src="..//images/pictureAttraction.png" alt="Tivoli">
+</imgbil>
+<empty>
+  <img src="..//images/maps.png" alt="Tivoli">
+  </empty>
+<form action="/submit" method="post">
+  <fieldset>
+    <legend th:text="'I hvor høj grad vil du besøge '+${attractionName}+'?'"></legend>
+    <input type="radio" id="choice1" name="choice" value="valgmulighed1">
+    <label for="choice1">Jeg skal afsted med det samme!</label><br>
+
+    <input type="radio" id="choice2" name="choice" value="valgmulighed2">
+    <label for="choice2">Jeg har noteret det på telefonen</label><br>
+
+    <input type="radio" id="choice3" name="choice" value="valgmulighed3">
+    <label for="choice3">Hvis jeg får tid</label><br>
+
+    <input type="radio" id="choice4" name="choice" value="valgmulighed4">
+    <label for="choice4">Ikke denne gang</label><br>
+
+    <input type="radio" id="choice5" name="choice" value="valgmulighed5">
+    <label for="choice5">Aldrig!</label>
+
+    <p>OBS vi har ikke lavet post-endpoint til denne, så oplysningerne opsamles ikke!</p>
+
+  </fieldset>
+  <button type="submit">Send</button>
+</form>
+<footer>
+  <p><Strong>Kontakt os her</Strong></p>
+  <p>Email: <a href="#">teamMMMD@failmail.dk</a></p>
+  <p>Mobil: <a href="#">+45 xxxxxxxx</a></p>
+  <p>&copy; 2024 Tourist Guide Part 2 - TeamMMMD (Mark, Martin, Mette, Daniel)</p>
+</footer>
+</body>
+</html>
