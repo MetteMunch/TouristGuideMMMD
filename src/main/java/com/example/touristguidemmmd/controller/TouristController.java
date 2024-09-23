@@ -29,6 +29,8 @@ public class TouristController {
         model.addAttribute("listOfAttractions",fullListOfAttractions);
         return "attractionList";
     }
+
+
     @GetMapping("/{name}/tags") //denne metode kaldes ved URL attractions/Tivoli/tags
     public String showTagsOnSpecificAttraction(@PathVariable String name, Model model){ //Hvad er forskellen på PathVariable og RequestVariable?
         List<Tag> tagListe = ts.getListOfTags(name);
@@ -46,6 +48,16 @@ public class TouristController {
         model.addAttribute("tagListe",attraction.getTagListe());
         model.addAttribute("allPossibleTags",Tag.values());
         return "updateAttraction";
+    }
+
+    @GetMapping("/{name}") //annotation som fortæller at ved kald af /attarctions/name, så køres denne metode der returnerer hvilken HTML der skal vises
+    public String showSpecificAttraction(@PathVariable String name, Model model){
+        TouristAttraction ta = ts.getSpecificTouristAttraction(name);
+        model.addAttribute("attractionName",name);
+        model.addAttribute("description",ta.getDescription());
+        model.addAttribute("tagsOnAttraction",ta.getTagListe());
+        String htmlToReturn = ta.getName().toLowerCase();
+        return htmlToReturn;
     }
 
     @PostMapping("/update") //annotation der bruges til at specificere hvilken url der skal kaldes ved håndtering af en HTTP-POST-request (fx sende data via formular til server eller andet)
