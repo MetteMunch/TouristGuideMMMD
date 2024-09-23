@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="https://www.thymeleaf.org"> <!--her angives at vi arbejder med thymeleaf og prefix th skal anvendes, når der skal kaldes attributter-->
+      xmlns:th="https://www.thymeleaf.org">
+<!--her angives at vi arbejder med thymeleaf og prefix th skal anvendes, når der skal kaldes attributter-->
 
 <head>
     <meta charset="UTF-8">
@@ -8,57 +9,53 @@
     sikres det at bredden af visning bliver det samme som bredden af skærmen. Initial-scale settingen sørger for, at siden ikke starter zoomet ind eller ud, men starter
     i oprindelig skala i forhold til enhedens skærmopløsning.-->
     <title>attractionList</title>
-    <link rel="stylesheet" href="/main.css">
+    <link rel="stylesheet" href="/martin.css">
 </head>
 <body>
 <h1>Liste med attraktioner</h1>
-<table>
-    <thead>
-    <tr><!-- tr betyder en række af celler i en tabel-->
-        <th>Navn</th> <!-- th angiver indhold af hver celle i øverste række af tabellen-->
-        <th>Beskrivelse</th>
-    </tr>
-    </thead>
-    <tbody th:each="attraction : ${listOfAttractions}">
-    <tr><!-- her kommer næste række i tabellen-->
-        <td th:text="${attraction.name}"></td> <!-- td angiver indhold af hver celle-->
-        <td th:text="${attraction.getDescription()}"></td> <!-- td angiver indhold af hver celle-->
-        <td>
-            <div> <!-- Alle knapper "wrappes" i divs, så det sikres, at knapperne stables vertikalt ovenover hinanden. -->
-            <form th:action="@{attractions/{attractionName}/edit(attractionName=${attraction.name})}" method = "get">
-                <button type="submit">Opdater</button>
-            </form>
-            </div>
+<main>
+    <table>
+        <thead>
+        <tr><!-- tr betyder en række af celler i en tabel-->
+            <th>Navn</th> <!-- th angiver indhold af hver celle i øverste række af tabellen-->
+            <th>Beskrivelse</th>
+        </tr>
+        </thead>
+        <tbody th:each="attraction : ${listOfAttractions}">
+        <tr><!-- her kommer næste række i tabellen-->
+            <td th:text="${attraction.name}"></td> <!-- td angiver indhold af hver celle-->
+            <td th:text="${attraction.getDescription()}"></td> <!-- td angiver indhold af hver celle-->
+            <td>
 
-            <div>
-            <form th:action="@{attractions/delete/{attractionName}(attractionName=${attraction.name})}" method="post" onsubmit="return confirmDeletion()">
-                <button type="submit">Slet</button>
-            </form>
-            </div>
-            <script>
-                function confirmDeletion() {
-                    return confirm("Are you sure you want to delete?")
-                }
-            </script>
-
-            <div>
-            <a th:href="@{attractions/{attractionName}/tags(attractionName=${attraction.name})}" method="get">
-                <button>Tags</button>
-            </a>
-            </div>
-
-            <div>
-            <a th:href="@{attractions/{attractionName}(attractionName=${attraction.name})}"><button>See more information</button>
-            </a>
-            </div>
-
-        </td>
-    </tr>
-    </tbody>
-</table>
-<form th:action="@{attractions/add}" method = get>
-    <button type="submit">Tilføj Attraktion</button>
-</form>
-
+                <form th:action="@{attractions/{attractionName}/edit(attractionName=${attraction.name})}"
+                      method="get">
+                    <button type="submit" class="submitbutton">Opdater</button>
+                </form>
+                <br>
+                <form th:action="@{attractions/delete/{attractionName}(attractionName=${attraction.name})}"
+                      method="post" onsubmit="return confirmDeletion()">
+                    <button type="submit" class="submitbutton">Slet</button>
+                </form>
+                <br>
+                <script>
+                    function confirmDeletion() {
+                        return confirm("Are you sure you want to delete?")
+                    }
+                </script>
+                <a th:href="@{attractions/{attractionName}/tags(attractionName=${attraction.name})}" method="get">
+                    <button class="submitbutton">Tags</button>
+                </a>
+                <br>
+                <a th:href="@{attractions/{attractionName}(attractionName=${attraction.name})}">
+                    <button class="submitbutton">See more information</button>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <form th:action="@{attractions/add}" method=get>
+        <button type="submit" class="tilføjattractionbutton">Tilføj Attraktion</button>
+    </form>
+</main>
 </body>
 </html>
