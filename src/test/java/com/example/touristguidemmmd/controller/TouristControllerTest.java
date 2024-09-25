@@ -66,7 +66,7 @@ class TouristControllerTest {
 
     @Test
     void showTagsOnSpecificAttraction() throws Exception {
-        mockMvc.perform(get("/attractions/SMK/tags"))
+        mockMvc.perform(get("/attractions/"+touristAttraction.getName()+"/tags"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("tags"))
                 .andExpect(content().string(containsString("Tags")));
@@ -74,7 +74,7 @@ class TouristControllerTest {
 
     @Test
     void goToEditAttraction() throws Exception {
-        mockMvc.perform(get("/attractions/SMK/edit"))
+        mockMvc.perform(get("/attractions/"+touristAttraction.getName()+"/edit"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("updateAttraction"))
                 .andExpect(model().attribute("description", touristAttraction.getDescription()))
@@ -86,7 +86,7 @@ class TouristControllerTest {
 
     @Test
     void showSpecificAttraction() throws Exception {
-        mockMvc.perform(get("/attractions/SMK"))
+        mockMvc.perform(get("/attractions/"+touristAttraction.getName()))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("attractionName", touristAttraction.getName()))
                 .andExpect(model().attribute("description", touristAttraction.getDescription()))
