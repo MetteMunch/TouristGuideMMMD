@@ -15,7 +15,7 @@ body {
         'footer'; /* Foderen fylder hele bredden */
     grid-template-rows: auto auto 1fr auto auto auto auto; /* Højden på rækkerne */
     grid-template-columns: 1fr; /* Kun én kolonne */
-    background-image: url(..//billeder/farver.webp);
+    background-image: url(images/farver.webp);
     background-size: cover; /* Denne linje sørger for, at billedet dækker hele skærmen */
     background-position: center; /* Centrerer billedet */
     background-repeat: no-repeat; /* Undgår, at billedet gentages */
@@ -37,7 +37,7 @@ body {
 }
 
 /* Grid-områder */
-header, nav, main, imgbil, empty, sletmåske, footer {
+header, nav, main, imgbil, empty, form, footer {
     background-color: powderblue; /* En lys blå farve */
     padding: 1em;
     border-radius: 15px; /* Bløde hjørner */
@@ -63,7 +63,7 @@ empty {
     grid-area: empty;
 }
 
-sletmåske {
+form {
     grid-area: form;
 }
 
@@ -76,6 +76,7 @@ h1 {
     text-align: center;
     font-family: sans-serif;
     font-size: 55px;
+
 }
 
 h2 {
@@ -85,30 +86,8 @@ h2 {
 }
 
 p {
-    font-family: Cambria;
+    font-family: Cambria, serif;
     font-size: 17px;
-}
-
-.custom-br { /* Sætter mellemrum mellem afsnit ved hjælp af <span class="custom-br"></span> */
-    display: block;
-    margin-bottom: 10px;
-}
-
-legend {
-    font-size: 22px;
-    font-family: "Century Gothic", serif;
-}
-
-label {
-    display: inline-flex; /* Sørger for, at radioknappen og label er på samme linje, men som en blok */
-    align-items: center; /* Centrerer dem vertikalt */
-    margin-bottom: 10px; /* Tilføjer lidt luft mellem valgene */
-    font-size: 18px;
-    font-family: Cambria;
-}
-
-input[type="radio"] {
-    margin-right: 10px; /* Lidt afstand mellem radioknappen og teksten */
 }
 
 /* Links */
@@ -138,17 +117,6 @@ button {
 
 form, a {
     display: inline;
-}
-
-.submitbutton {
-    margin-top: 10px;
-    padding: 5px 10px;
-    font-size: 12px;
-    background-color: #4CAF50;
-    color: white;
-    border: 5px;
-    border-radius: 5px;
-    cursor: pointer;
 }
 
 .tilføjattractionbutton {
@@ -191,6 +159,7 @@ table {
 /* Tilføjer borders til hele tabellen */
 table, th, td {
     border: 1px solid black;
+    background-color: powderblue;
 }
 
 /* Justerer cellernes padding for at give mere plads i dem */
@@ -201,7 +170,6 @@ th, td {
 
 /* Gør tabelhovedet lidt mere tydeligt */
 th {
-    background-color: powderblue; /* Lys grå baggrund til headeren */
     font-weight: bold;
 }
 
@@ -213,10 +181,4 @@ tr:nth-child(even) {
 /* Tilføjer lidt hover-effekt på rækkerne */
 tr:hover {
     background-color: #e2e2e2; /* Lysere grå ved hover */
-}
-
-.list1 {
-    text-align: left;
-    font-family: sans-serif;
-    font-size: 12px;
 }

@@ -7,11 +7,13 @@
     sikres det at bredden af visning bliver det samme som bredden af skærmen. Initial-scale settingen sørger for, at siden ikke starter zoomet ind eller ud, men starter
     i oprindelig skala i forhold til enhedens skærmopløsning.-->
     <title>updateAttraction</title>
-  <link rel="stylesheet" href="/martin.css">
+  <link rel="stylesheet" href="/list.css">
 </head>
 <body>
+<header>
 <h1>Ændring af informationer</h1>
-<main>
+</header>
+  <main>
 <form action="/attractions/update" method="post"> <!--Formularen er oprette med POST-metoden, dvs. når
  vi sender ændringer, så vil de blive håndteret af POST-metoden i controleren-->
 
@@ -49,9 +51,13 @@
   <!-- Ok og fortryd knapper -->
   <button type="submit">Ok</button>
   <button type="button" onclick="window.location.href='/attractions'">Fortryd</button>
-
-
 </form>
 </main>
+<footer>
+  <p><Strong>Kontakt os her</Strong></p>
+  <p>Email: <a href="#">teamMMMD@failmail.dk</a></p>
+  <p>Mobil: <a href="#">+45 xxxxxxxx</a></p>
+  <p>&copy; 2024 Tourist Guide Part 2 - TeamMMMD (Mark, Martin, Mette, Daniel)</p>
+</footer>
 </body>
 </html>
