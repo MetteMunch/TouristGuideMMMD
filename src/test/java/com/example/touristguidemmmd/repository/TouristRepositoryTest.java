@@ -9,18 +9,15 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class TouristRepositoryTest {
 
-    TouristAttraction touristAttraction1;
-    TouristAttraction touristAttraction2;
+
     TouristRepository tr;
 
     @BeforeEach
     void setUp() {
-        touristAttraction1 = new TouristAttraction("touristAttraction1", "des1", "by1", List.of(Tag.FORLYSTELSE));
-        touristAttraction2 = new TouristAttraction("touristAttraction2", "des2", "by2", List.of(Tag.MUSEUM));
         tr = new TouristRepository();
 
     }
@@ -34,15 +31,32 @@ class TouristRepositoryTest {
         TouristAttraction expected = new TouristAttraction("Tivoli", "Forlystelsespark i centrum af KBH",
                 "København", List.of(Tag.FORLYSTELSE, Tag.PARK, Tag.RESTAURANT));
         TouristAttraction actual = tr.getByNameTouristRepository("Tivoli");
-        assertEquals(expected,actual);
+        assertEquals(expected, actual);
 
     }
-
 
     @Test
     void getDescription() {
         String expected = "Åben park midt på Frederiksberg";
         String actual = tr.getDescription("Frederiksberg Have");
-        assertEquals(expected,actual);
+        assertEquals(expected, actual);
     }
+
+    @Test
+    void addTouristAttractionWithSuccess() {
+        tr.addTouristAttraction("NyAttraktion", "Beskrivelse", "By", List.of(Tag.MUSEUM));
+        //Tjek af om attraktionen findes ved hjælp af vores metode:
+        assertTrue(tr.checkIfAttractionAlreadyExist("NyAttraktion"));
+    }
+
+    @Test
+    void tryAddAlreadyExistingAttraction() {
+        tr.addTouristAttraction("at1","desp","by",List.of(Tag.PARK));
+        //her tjekker vi om den smider exception som forventet, når vi præver at oprette samme attraktion igen
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+                tr.addTouristAttraction("at1","desp","by",List.of(Tag.PARK));
+        });
+
+    }
+
 }

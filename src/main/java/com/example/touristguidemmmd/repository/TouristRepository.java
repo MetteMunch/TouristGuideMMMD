@@ -26,6 +26,8 @@ public class TouristRepository {
     public void addTouristAttraction(String name, String description, String by, List<Tag> tags) {
         if(checkIfAttractionAlreadyExist(name)){
             throw new IllegalArgumentException("Attraktion med dette navn eksisterer allerede");
+            //denne fejlmeddelelse fanges i Controllerens POST metode (save), hvor der vil
+            //komme en meddelelse til brugeren om at attraktionen allerede findes
         }
         touristRepository.add(new TouristAttraction(name, description, by, tags));
     }
