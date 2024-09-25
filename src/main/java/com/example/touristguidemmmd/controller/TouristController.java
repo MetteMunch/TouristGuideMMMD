@@ -76,9 +76,16 @@ public class TouristController {
     }
 
     @PostMapping("/save") //annotation der bruges til at specificere hvilken url der skal kaldes ved håndtering af en HTTP-POST-request (fx sende data via formular til server eller andet)
-    public String saveAttraction(@RequestParam String name, @RequestParam String description, @RequestParam String by, @RequestParam List<Tag> tagListe){
-        ts.addTouristAttraction(name, description, by, tagListe);
-        return "redirect:/attractions";
+    public String saveAttraction(@RequestParam String name, @RequestParam String description, @RequestParam String by, @RequestParam List<Tag> tagListe, Model model) {
+        try {
+            ts.addTouristAttraction(name, description, by, tagListe);
+            return "redirect:/attractions";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage",e.getMessage());
+            //her fanges og vises fejlmeddelelse fra Repository metoden
+            return "addAttraction";
+        }
+
     }
 
     @PostMapping("/delete/{name}")

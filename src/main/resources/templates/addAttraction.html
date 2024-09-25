@@ -11,6 +11,10 @@
 </head>
 <body>
 <h1>Add Attraction</h1>
+<!--Nedenstående tjekker om der kommer en fejlmeddelelse ifm oprettelse af attraktion -->
+<div th:if="${errorMessage}" style="color: red;">
+    <p th:text="${errorMessage}"></p>
+</div>
 <form action="/attractions/save" method="post"> <!--Formularen er oprette med POST-metoden, dvs. når
  vi sender ændringer, så vil de blive håndteret af POST-metoden i controleren-->
 

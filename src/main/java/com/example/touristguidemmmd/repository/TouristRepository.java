@@ -24,7 +24,22 @@ public class TouristRepository {
     }
 
     public void addTouristAttraction(String name, String description, String by, List<Tag> tags) {
+        if(checkIfAttractionAlreadyExist(name)){
+            throw new IllegalArgumentException("Attraktion med dette navn eksisterer allerede");
+        }
         touristRepository.add(new TouristAttraction(name, description, by, tags));
+    }
+
+    //nedenstående metode benyttes til tjek af om attraktion allerede er oprettet.
+    //boolean resultat anvendes så i ovenstående add metode
+
+    public boolean checkIfAttractionAlreadyExist(String name) {
+        for(TouristAttraction attraction : touristRepository){
+            if(attraction.getName().equalsIgnoreCase(name)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public List<TouristAttraction> getFullTouristRepository() {
