@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(TouristController.class)
 class TouristControllerTest {
 
-    private TouristAttraction touristAttraction = new TouristAttraction();
+    private TouristAttraction touristAttraction;
 
     @Autowired
     private MockMvc mockMvc;
@@ -38,12 +38,13 @@ class TouristControllerTest {
 
     @BeforeEach
     void setUp() {
+        touristAttraction = new TouristAttraction();
         touristAttraction.setName("SMK");
         touristAttraction.setDescription("A famous museum");
         touristAttraction.setBy("København");
         touristAttraction.setTagListe(List.of(Tag.MUSEUM, Tag.DESIGN));
 
-//        when(touristService.getSpecificTouristAttraction(touristAttraction.getName())).thenReturn(touristAttraction);
+        when(touristService.getSpecificTouristAttraction("SMK")).thenReturn(touristAttraction);
     }
 
     @AfterEach
@@ -65,35 +66,14 @@ class TouristControllerTest {
 
     @Test
     void goToEditAttraction() throws Exception {
-//        when(touristService.getSpecificTouristAttraction(touristAttraction.getName())).thenReturn(touristAttraction);
-//        when(touristService.getSpecificTouristAttraction("SMK")).thenReturn(new TouristAttraction());
-//        mockMvc.perform(get("/attractions/SMK/edit")).andExpect(status().isOk()).andExpect(model().attribute("name", touristAttraction.getName())).
-//                andExpect(model().attribute("description", touristAttraction.getDescription())).
-//                andExpect(model().attribute("by", touristAttraction.getBy())).
-//                andExpect(model().attribute("byListe", List.of("København","Frederiksberg","Aarhus","Odense","Aalborg"))).
-//                andExpect(model().attribute("tagListe", touristAttraction.getTagListe())).
-//                andExpect(model().attribute("allPossibleTags", List.of(Tag.values()))).andExpect(view().name("updateAttraction"));
-// Mock the service to return the touristAttraction object
-//        when(touristService.getSpecificTouristAttraction("SMK")).thenReturn(new TouristAttraction());
-//
-//        // Perform a GET request and verify the model attributes and view name
-//        mockMvc.perform(get("/attractions/{name}/edit"))
-//                .andExpect(status().isOk())
-//                .andExpect(model().attribute("description", touristAttraction.getDescription()))
-//                .andExpect(model().attribute("by", touristAttraction.getBy()))
-//                .andExpect(model().attribute("byListe", List.of("København", "Frederiksberg", "Aarhus", "Odense", "Aalborg")))
-//                .andExpect(model().attribute("tagListe", touristService.getListOfTags(touristAttraction.getName())))
-//                .andExpect(model().attribute("allPossibleTags", Tag.values()))
-//                .andExpect(view().name("updateAttraction"));
-//
-//        // Verify that the service was called with the correct parameter
-//        verify(touristService).getSpecificTouristAttraction("SMK");
         mockMvc.perform(get("/attractions/SMK/edit"))
                 .andExpect(status().isOk())
+                .andExpect(view().name("updateAttraction"))
+                .andExpect(model().attribute("description", "A famous museum"))
                 .andExpect(model().attribute("by", "København"))
-                .andExpect(view().name("updateAttraction"));
-
-//        fail(); //TODO: NOT IMPLEMENTED
+                .andExpect(model().attribute("byListe", List.of("København", "Frederiksberg", "Aarhus", "Odense", "Aalborg")))
+                .andExpect(model().attribute("tagListe", List.of(Tag.MUSEUM, Tag.DESIGN)))
+                .andExpect(model().attribute("allPossibleTags", Tag.values()));
     }
 
     @Test
