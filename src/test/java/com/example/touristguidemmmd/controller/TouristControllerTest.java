@@ -55,7 +55,9 @@ class TouristControllerTest {
 
     @Test
     void getFullListOfAttractions() throws Exception {
-        mockMvc.perform(get("/attractions")).andExpect(status().isOk()).andExpect(view().name("attractionList"));
+        mockMvc.perform(get("/attractions"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("attractionList"));
     }
 
     @Test
@@ -82,10 +84,10 @@ class TouristControllerTest {
     void showSpecificAttraction() throws Exception {
         mockMvc.perform(get("/attractions/SMK"))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("attractionName", "SMK"))
-                .andExpect(model().attribute("description", "A famous museum"))
-                .andExpect(model().attribute("tagsOnAttraction", List.of(Tag.MUSEUM, Tag.DESIGN)))
-                .andExpect(model().attribute("city", "København"))
+                .andExpect(model().attribute("attractionName", touristAttraction.getName()))
+                .andExpect(model().attribute("description", touristAttraction.getDescription()))
+                .andExpect(model().attribute("tagsOnAttraction", touristAttraction.getTagListe()))
+                .andExpect(model().attribute("city", touristAttraction.getBy()))
                 .andExpect(view().name("showAttraction"));
     }
 
