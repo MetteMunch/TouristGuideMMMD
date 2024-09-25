@@ -37,6 +37,9 @@ class TouristControllerTest {
     @MockBean
     private TouristService touristService;
 
+    String tagsInString = "MUSEUM, DESIGN"; /*
+    SKAL MATCHE TOURISTATTRACTIONS TAGLISTE
+    */
 
     @BeforeEach
     void setUp() {
@@ -45,6 +48,7 @@ class TouristControllerTest {
         touristAttraction.setDescription("A famous museum");
         touristAttraction.setBy("København");
         touristAttraction.setTagListe(List.of(Tag.MUSEUM, Tag.DESIGN));
+
 
         when(touristService.getSpecificTouristAttraction("SMK")).thenReturn(touristAttraction);
     }
@@ -73,10 +77,10 @@ class TouristControllerTest {
         mockMvc.perform(get("/attractions/SMK/edit"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("updateAttraction"))
-                .andExpect(model().attribute("description", "A famous museum"))
-                .andExpect(model().attribute("by", "København"))
+                .andExpect(model().attribute("description", touristAttraction.getDescription()))
+                .andExpect(model().attribute("by", touristAttraction.getBy()))
                 .andExpect(model().attribute("byListe", List.of("København", "Frederiksberg", "Aarhus", "Odense", "Aalborg")))
-                .andExpect(model().attribute("tagListe", List.of(Tag.MUSEUM, Tag.DESIGN)))
+                .andExpect(model().attribute("tagListe", touristAttraction.getTagListe()))
                 .andExpect(model().attribute("allPossibleTags", Tag.values()));
     }
 
@@ -93,25 +97,14 @@ class TouristControllerTest {
 
     @Test
     void updateAttraction() throws Exception {
-
-        String tags = "MUSEUM,DESIGN"; /*
-        Dette kan ikke passes som param til mockmetoden med gettermetoden, da gettermetoden returnerer en List<Tag>,
-        men kræver et String element.
-        */
-
-
         mockMvc.perform(post("/attractions/update")
                         .param("name", touristAttraction.getName())
                         .param("description", touristAttraction.getDescription())
                         .param("by", touristAttraction.getBy())
-                        .param("tagListe", tags) // Simulate the list of tags
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED))
-                .andExpect(status().is3xxRedirection()) // Expecting a redirection
-                .andExpect(redirectedUrl("/attractions")); // Verify the redirect URL
-
-        // Assert: verify that the service's updateAttraction method was called with correct arguments
-
-//        fail(); //TODO: NOT IMPLEMENTED
+                        .param("tagListe", tagsInString)
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)) //Specifies that the request content type is application/x-www-form-urlencoded, which is the standard content type when submitting forms via HTTP POST
+                .andExpect(status().is3xxRedirection()) // Vi forventer en 300-http statuskode(redirect)
+                .andExpect(redirectedUrl("/attractions"));
     }
 
     @Test
@@ -123,12 +116,24 @@ class TouristControllerTest {
     }
 
     @Test
-    void saveAttraction() {
-        fail(); //TODO: NOT IMPLEMENTED
+    void saveAttraction() throws Exception {
+        mockMvc.perform(post("/attractions/save")
+                        .param("name", touristAttraction.getName())  // Use touristAttraction's name
+                        .param("description", touristAttraction.getDescription())  // Use description from object
+                        .param("by", touristAttraction.getBy())  // Use city from object
+                        .param("tagListe", tagsInString))
+                .andDo(print())  // Optional: print the request and response for debugging
+                .andExpect(status().is3xxRedirection())  // Expecting a redirection
+                .andExpect(redirectedUrl("/attractions"));
     }
 
     @Test
-    void deleteAttraction() {
-        fail(); //TODO: NOT IMPLEMENTED
+    void deleteAttraction() throws Exception {
+        mockMvc.perform(post("/attractions/delete/{name}", touristAttraction.getName())
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andDo(print())  // Optional: print the request and response for debugging
+                .andExpect(status().is3xxRedirection())  // Expecting a redirection
+                .andExpect(redirectedUrl("/attractions"));
+//        fail(); //TODO: NOT IMPLEMENTED
     }
 }
