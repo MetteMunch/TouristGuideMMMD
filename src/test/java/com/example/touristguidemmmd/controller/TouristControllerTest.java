@@ -9,19 +9,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(TouristController.class)
@@ -77,21 +79,45 @@ class TouristControllerTest {
     }
 
     @Test
-    void showSpecificAttraction() {
-        fail(); //TODO: NOT IMPLEMENTED
+    void showSpecificAttraction() throws Exception {
+        mockMvc.perform(get("/attractions/SMK"))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("attractionName", "SMK"))
+                .andExpect(model().attribute("description", "A famous museum"))
+                .andExpect(model().attribute("tagsOnAttraction", List.of(Tag.MUSEUM, Tag.DESIGN)))
+                .andExpect(model().attribute("city", "København"))
+                .andExpect(view().name("showAttraction"));
     }
 
     @Test
-    void updateAttraction() {
-        fail(); //TODO: NOT IMPLEMENTED
+    void updateAttraction() throws Exception {
+
+        String tags = "MUSEUM,DESIGN"; /*
+        Dette kan ikke passes som param til mockmetoden med gettermetoden, da gettermetoden returnerer en List<Tag>,
+        men kræver et String element.
+        */
+
+
+        mockMvc.perform(post("/attractions/update")
+                        .param("name", touristAttraction.getName())
+                        .param("description", touristAttraction.getDescription())
+                        .param("by", touristAttraction.getBy())
+                        .param("tagListe", tags) // Simulate the list of tags
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andExpect(status().is3xxRedirection()) // Expecting a redirection
+                .andExpect(redirectedUrl("/attractions")); // Verify the redirect URL
+
+        // Assert: verify that the service's updateAttraction method was called with correct arguments
+
+//        fail(); //TODO: NOT IMPLEMENTED
     }
 
     @Test
     void addAttraction() throws Exception {
-        mockMvc.perform(get("/attractions/add")).andExpect(status().isOk()).
-                andExpect(model().attribute("allTags", List.of(Tag.values()))).andExpect(model().
-                        attribute("byListe", List.of("København","Frederiksberg","Aarhus","Odense","Aalborg"))).
-                andExpect(view().name("addAttraction"));
+        mockMvc.perform(get("/attractions/add")).andExpect(status().isOk())
+                .andExpect(model().attribute("allTags", List.of(Tag.values())))
+                .andExpect(model().attribute("byListe", List.of("København", "Frederiksberg", "Aarhus", "Odense", "Aalborg")))
+                .andExpect(view().name("addAttraction"));
     }
 
     @Test
