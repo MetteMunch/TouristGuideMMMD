@@ -17,6 +17,9 @@ public class TouristAttraction {
         this.by = by;
         this.tagListe = new ArrayList<>(tags);
     }
+    public TouristAttraction() {
+
+    }
 
     public String getName(){
         return name;
