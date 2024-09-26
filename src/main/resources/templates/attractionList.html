@@ -19,11 +19,12 @@
     <table>
         <thead>
         <tr><!-- tr betyder en række af celler i en tabel-->
-            <th>Navn</th> <!-- th angiver indhold af hver celle i øverste række af tabellen-->
-            <th>Beskrivelse</th>
+            <th class="teksttabel">Navn</th> <!-- th angiver indhold af hver celle i øverste række af tabellen-->
+            <th class="teksttabel">Beskrivelse</th>
+            <th class="teksttabel">Funktioner</th>
         </tr>
         </thead>
-        <tbody th:each="attraction : ${listOfAttractions}">
+        <tbody class="teksttabel" th:each="attraction : ${listOfAttractions}">
         <tr><!-- her kommer næste række i tabellen-->
             <td th:text="${attraction.name}"></td> <!-- td angiver indhold af hver celle-->
             <td th:text="${attraction.getDescription()}"></td> <!-- td angiver indhold af hver celle-->
@@ -33,12 +34,12 @@
                       method="get">
                     <button type="submit" class="submitbutton">Opdater</button>
                 </form>
-                <br>
+
                 <form th:action="@{attractions/delete/{attractionName}(attractionName=${attraction.name})}"
                       method="post" onsubmit="return confirmDeletion()">
                     <button type="submit" class="submitbutton">Slet</button>
                 </form>
-                <br>
+
                 <script>
                     function confirmDeletion() {
                         return confirm("Are you sure you want to delete?")
@@ -47,7 +48,7 @@
                 <a th:href="@{attractions/{attractionName}/tags(attractionName=${attraction.name})}" method="get">
                     <button class="submitbutton">Tags</button>
                 </a>
-                <br>
+
                 <a th:href="@{attractions/{attractionName}(attractionName=${attraction.name})}">
                     <button class="submitbutton">See more information</button>
                 </a>
