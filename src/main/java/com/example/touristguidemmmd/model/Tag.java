@@ -9,7 +9,7 @@ public enum Tag {
     SPORT("Sport"),
     PARK("Park"),
     FORLYSTELSE("Forlystelse"),
-    DESIGN("Desing"),
+    DESIGN("Design"),
     ARKITEKTUR("Arkitektur"),
     MONUMENTER("Monumenter");
 

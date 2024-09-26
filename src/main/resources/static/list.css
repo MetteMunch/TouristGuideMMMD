@@ -1,0 +1,155 @@
+/* Grundlæggende layout og styling */
+
+/* Mobile first layout */
+body {
+    min-height: 100vh; /* Sæt body-højden til mindst 100% af skærmhøjden */
+    display: grid; /* Aktiverer grid-layout */
+    grid-gap: 1em; /* Mellemrum mellem grid-områder */
+    grid-template-areas:
+        'header' /* Headeren fylder hele bredden */
+        'main' /* Hovedindholdet fylder hele bredden */
+        'footer'; /* Foderen fylder hele bredden */
+    grid-template-rows: auto  1fr auto; /* Højden på rækkerne */
+    grid-template-columns: 1fr; /* Kun én kolonne */
+    background-image: url(images/farver.webp);
+    background-size: cover; /* Denne linje sørger for, at billedet dækker hele skærmen */
+    background-position: center; /* Centrerer billedet */
+    background-repeat: no-repeat; /* Undgår, at billedet gentages */
+}
+
+/* Medieforespørgsel for større skærme (min-width: 60em) */
+@media (min-width: 60em) {
+    body {
+        width: 80%;
+        margin: 0 auto;
+        grid-template-areas:
+            'header' /* Headeren fylder alle kolonner */
+            'main' /* Navigation til venstre, hovedindhold i midt, billede til højre */
+            'footer'; /* Foderen fylder alle kolonner */
+        grid-template-columns: 1fr; /* Tre kolonner: nav er 15em bred, main fylder 1fr, imgbil fylder 1fr */
+        grid-template-rows: auto 1fr auto; /* Højden på rækkerne */
+    }
+}
+
+/* Grid-områder */
+header, main, footer {
+    background-color: powderblue; /* En lys blå farve */
+    padding: 1em;
+    border-radius: 15px; /* Bløde hjørner */
+}
+
+header {
+    grid-area: header;
+}
+
+main {
+    grid-area: main;
+}
+
+footer {
+    grid-area: footer;
+}
+
+/* Typografi og tekst */
+h1 {
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 55px;
+}
+
+h2 {
+    text-align: left;
+    font-family: "Century Gothic", serif;
+    font-size: 40px;
+}
+
+/* Links */
+.linka {
+    color: black;
+    transition: color 0.3s ease;
+    text-decoration: none;
+}
+
+.linka:hover {
+    color: green;
+    text-decoration: underline;
+}
+
+form, a {
+    display: inline;
+}
+
+.submitbutton {
+    margin-top: 10px;
+    padding: 5px 10px;
+    font-size: 12px;
+    background-color: #4CAF50;
+    color: white;
+    border-width: 1px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.tilføjattractionbutton {
+    margin-top: 15px;
+    padding: 18px;
+    font-size: 21px;
+    background-color: #4CAF50;
+    color: white;
+    border: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Billeder */
+img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 15px; /* Bløde hjørner */
+}
+
+/* Iframe */
+iframe {
+    height: 100%; /* Får iframe til at fylde hele højden af body */
+    width: 100%; /* Får iframe til at fylde hele bredden af body */
+    border: none; /* Fjerner border for et rent udseende */
+    border-radius: 15px; /* Bløde hjørner */
+}
+
+/* Generelle tabelindstillinger */
+table {
+    width: 100%;
+    border-collapse: collapse; /* Sørger for, at cellernes grænser er sammenhængende */
+    margin: 20px 0; /* Tilføjer lidt margin over og under tabellen */
+}
+
+/* Tilføjer borders til hele tabellen */
+table, th, td {
+    border: 1px solid black;
+    background-color: darkgrey; /* Lys grå baggrund til headeren */
+}
+
+/* Justerer cellernes padding for at give mere plads i dem */
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+/* Gør tabelhovedet lidt mere tydeligt */
+th {
+    font-weight: bold;
+}
+
+/* Gør skiftevis rækker forskellige farver for bedre læsbarhed */
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Tilføjer lidt hover-effekt på rækkerne */
+tr:hover {
+    background-color: #e2e2e2; /* Lysere grå ved hover */
+}
