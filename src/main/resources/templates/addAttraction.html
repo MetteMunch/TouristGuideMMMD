@@ -6,12 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--denne meta-tag sørger for reponsiv visning. Ved at sætte bredde lig med device bredde
     sikres det at bredden af visning bliver det samme som bredden af skærmen. Initial-scale settingen sørger for, at siden ikke starter zoomet ind eller ud, men starter
     i oprindelig skala i forhold til enhedens skærmopløsning.-->
-    <title>Add Attraction</title>
+    <title>Add  Attraction</title>
     <link rel="stylesheet" href="/list.css">
 </head>
 <body>
 <header>
 <h1>Add Attraction</h1>
+<!--Nedenstående tjekker om der kommer en fejlmeddelelse ifm oprettelse af attraktion -->
+<div th:if="${errorMessage}" style="color: red;">
+    <p th:text="${errorMessage}"></p>
+</div>
 </header>
 <main>
     <form action="/attractions/save" method="post"> <!--Formularen er oprette med POST-metoden, dvs. når

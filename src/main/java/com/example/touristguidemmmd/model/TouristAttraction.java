@@ -2,6 +2,7 @@ package com.example.touristguidemmmd.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class TouristAttraction {
     private String name;
@@ -58,4 +59,20 @@ public class TouristAttraction {
     public String toString(){
         return name + " "+ description;
     }
+
+    @Override // denne Override metode bruges til test, hvor to objekter skal sammenlignes med hinanden
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TouristAttraction that = (TouristAttraction) o;
+        return Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(by, that.by) && Objects.equals(tagListe, that.tagListe);
+    }
+
+    @Override // denne hører til ovennævnte metode
+    public int hashCode() {
+        return Objects.hash(name, description, by, tagListe);
+    }
 }
+
+
+
