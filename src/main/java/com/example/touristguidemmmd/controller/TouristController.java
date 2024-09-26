@@ -19,7 +19,7 @@ public class TouristController {
 
     private final TouristService ts;
 
-    public TouristController(TouristService ts){
+    public TouristController (TouristService ts){
         this.ts = ts;
     }
 
