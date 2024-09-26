@@ -13,7 +13,7 @@ import java.util.List;
 
 
 @Controller //annotation som fortæller Spring at denne klasse håndterer HTTP-forespørgsler
-@RequestMapping("attractions")//annotation som fortæller hvilken url / sti at alle forespørgslerne til denne controller skal have for at køre metoderne
+@RequestMapping("/attractions")//annotation som fortæller hvilken url / sti at alle forespørgslerne til denne controller skal have for at køre metoderne
 
 public class TouristController {
 
