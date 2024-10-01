@@ -13,7 +13,7 @@ import java.util.List;
 
 
 @Controller //annotation som fortæller Spring at denne klasse håndterer HTTP-forespørgsler
-@RequestMapping("/attractions")//annotation som fortæller hvilken url / sti at alle forespørgslerne til denne controller skal have for at køre metoderne
+@RequestMapping("/attractions")//annotation Endpoint som fortæller hvilken url / sti at alle forespørgslerne til denne controller skal have for at køre metoderne
 
 public class TouristController {
 
@@ -63,7 +63,7 @@ public class TouristController {
     @PostMapping("/update") //annotation der bruges til at specificere hvilken url der skal kaldes ved håndtering af en HTTP-POST-request (fx sende data via formular til server eller andet)
     public String updateAttraction(@RequestParam String name, @RequestParam String description, @RequestParam String by, @RequestParam List<Tag> tagListe){
         ts.updateAttraction(name, description, by, tagListe);
-        return "redirect:/attractions";
+        return "redirect:/attractions"; //redirect fortæller gå tilbage til browseren og vis denne side (så kaldet kommer fra browseren igen)
     }
 
     @GetMapping("/add")
