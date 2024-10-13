@@ -37,6 +37,8 @@ public class TouristRepository {
             //denne fejlmeddelelse fanges i Controllerens POST metode (save), hvor der vil
             //komme en meddelelse til brugeren om at attraktionen allerede findes
         }
+
+
         touristRepository.add(new TouristAttraction(name, description, by, tags));
     }
 
@@ -64,7 +66,6 @@ public class TouristRepository {
                 String concatStrings = rs.getString("tags");
                 if (concatStrings != null) {
                     String[] tagArr = concatStrings.split(",\\s*");
-
                     for (String tagToFind : tagArr) {
                         for (Tag tag : Tag.values()) {
                             if (tag.getDisplayName().equalsIgnoreCase(tagToFind)) {

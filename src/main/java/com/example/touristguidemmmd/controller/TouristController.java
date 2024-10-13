@@ -30,6 +30,23 @@ public class TouristController {
         return "attractionList";
     }
 
+    //*** TEST ***
+    @GetMapping("/testCRUD/{attractionID}")
+    public String testCrudSQL(@PathVariable int attractionID, Model model) {
+        List<Tag> listOfTags = ts.getAttractionTagsFromDB(attractionID);
+        String attractionCity = ts.getCityFromDB(attractionID);
+
+        model.addAttribute("city",attractionCity );
+        model.addAttribute("listOfTags", listOfTags);
+        for (Tag tag : listOfTags) {
+            System.out.println(tag);
+        }
+        System.out.println(attractionCity);
+
+        return "testCRUDSQL";
+    }
+    //---------------------------------
+
 
     @GetMapping("/{name}/tags") //denne metode kaldes ved URL attractions/Tivoli/tags
     public String showTagsOnSpecificAttraction(@PathVariable String name, Model model){ //Hvad er forskellen på PathVariable og RequestVariable?

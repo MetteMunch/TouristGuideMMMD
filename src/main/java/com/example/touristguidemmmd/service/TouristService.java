@@ -17,6 +17,16 @@ public class TouristService {
     }
 
     ////////////////////CRUD//////////////////////////////
+
+    //*** TEST ***
+    public List<Tag> getAttractionTagsFromDB(int attractionID) {
+        return tr.getAttractionTagsFromDB(attractionID);
+    }
+    public String getCityFromDB(int attractionID) {
+        return tr.getCityFromDB(attractionID);
+    }
+
+    //------------------------------------
     public void addTouristAttraction(String name, String description, String by, List<Tag> tags) {
         tr.addTouristAttraction(name, description, by, tags);
     }
