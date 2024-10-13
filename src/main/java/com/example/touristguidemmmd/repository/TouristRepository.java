@@ -37,9 +37,59 @@ public class TouristRepository {
             //denne fejlmeddelelse fanges i Controllerens POST metode (save), hvor der vil
             //komme en meddelelse til brugeren om at attraktionen allerede findes
         }
-
-
+//        String sql ="SELECT attractionID, attractionName, attractionDesc FROM touristattractiondb.attraction";
+//
+//        try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+//            PreparedStatement ps = con.prepareStatement(sql);
+//            ResultSet rs = ps.executeQuery();
+//
+//            while(rs.next()) {
+//                TouristAttraction ta = new TouristAttraction();   //TODO: Arbejdskode
+//
+//                int attractionID = rs.getInt("attractionID");
+//                String attractionName = rs.getString("attractionName");
+//                String attractionDesc = rs.getString("attractionDesc");
+//
+//                ta.setAttractionID(attractionID);
+//                ta.setName(attractionName);
+//                ta.setDescription(attractionDesc);
+//                ta.setBy(getCityFromDB(attractionID));
+//                ta.setTagListe(getAttractionTagsFromDB(attractionID));
+//
+//                touristRepository.add()
+//            }
+//        } catch(SQLException e) {
+//            e.printStackTrace();
+//        }
         touristRepository.add(new TouristAttraction(name, description, by, tags));
+    }
+
+    public void addTouristAttractionToDB(TouristAttraction ta) {
+        String sqlAddAttraction = "INSERT INTO attraction(attractionID, attractionName, attractionDesc, postalcode) VALUES(?,?,?)";
+
+
+
+        try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+            PreparedStatement ps  = con.prepareStatement(sqlAddAttraction);
+            ps.setString(1, ta.getName());
+            ps.setString(2, ta.getDescription());
+            ps.setInt(3, getPostalCodeFromCityDB(ta));
+
+        }catch(SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public void addTouristAttractionTagsToDB(TouristAttraction ta) {
+//        String sqlAddTagsToAttractionDB = "INSERT INTO attractiontag(attractionID, tagID) VALUES(?,?)";
+//
+//        try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+//            for (Tag tag : ta.getTagListe()) {
+//                PreparedStatement ps = con.prepareStatement(sqlAddTagsToAttractionDB);
+//                //TODO: Finde tilsvarende tags i SQL DB og assign i preparedstatement.
+//            }
+//        }catch(SQLException e) {
+//            e.printStackTrace();
+//        }
     }
 
     //nedenstående metode benyttes til tjek af om attraktion allerede er oprettet.
@@ -98,9 +148,26 @@ public class TouristRepository {
         }
         return cityToReturn;
     }
+    public int getPostalCodeFromCityDB(TouristAttraction ta) {
+        String sql = "SELECT postalcode FROM location WHERE city=?";
+        int postalcodeToReturn = -1;
+
+        try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, ta.getBy());
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()){
+                postalcodeToReturn = rs.getInt("postalcode");
+            }
+
+        }catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return postalcodeToReturn;
+    }
 
     public List<TouristAttraction> getFullTouristRepository() {
-
         return touristRepository;
     }
 
