@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Repository // annotation som fortæller Spring, at denne klasse har ansvar for adgang til data (fx databaseadministration)
 public class TouristRepository {
@@ -67,29 +68,69 @@ public class TouristRepository {
     public void addTouristAttractionToDB(TouristAttraction ta) {
         String sqlAddAttraction = "INSERT INTO attraction(attractionID, attractionName, attractionDesc, postalcode) VALUES(?,?,?)";
 
-
-
         try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
             PreparedStatement ps  = con.prepareStatement(sqlAddAttraction);
             ps.setString(1, ta.getName());
             ps.setString(2, ta.getDescription());
             ps.setInt(3, getPostalCodeFromCityDB(ta));
 
+            //Giver objektets tagværdier videre og assigner dem i SQL i attractiontag
+            addTouristAttractionTagsToDB(ta);
+
         }catch(SQLException e) {
             e.printStackTrace();
         }
     }
     public void addTouristAttractionTagsToDB(TouristAttraction ta) {
-//        String sqlAddTagsToAttractionDB = "INSERT INTO attractiontag(attractionID, tagID) VALUES(?,?)";
-//
-//        try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
-//            for (Tag tag : ta.getTagListe()) {
-//                PreparedStatement ps = con.prepareStatement(sqlAddTagsToAttractionDB);
-//                //TODO: Finde tilsvarende tags i SQL DB og assign i preparedstatement.
-//            }
-//        }catch(SQLException e) {
-//            e.printStackTrace();
-//        }
+        String sqlGetTagID ="SELECT tagID FROM tag where tagName =?";
+        String sqlAddTagsToAttractionDB ="INSERT INTO attractiontag(attractionID, tagID) VALUES(?, ?)";
+
+
+        try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+            //Hente eksisterende tag
+            PreparedStatement psGetTagID = con.prepareStatement(sqlGetTagID);
+            //Tilføje forbindelse mellem attractionID og tagID
+            PreparedStatement psAddTagToAttraction = con.prepareStatement(sqlAddTagsToAttractionDB);
+
+            psAddTagToAttraction.setInt(1, getAttractionIDFromAttractionName(ta.getName()));
+
+            for (Tag tag : ta.getTagListe()) {
+                psGetTagID.setString(1, tag.getDisplayName());
+                ResultSet rs = psGetTagID.executeQuery();
+
+                if (rs.next()) {
+                    int tagID = rs.getInt("tagID");
+
+                    psAddTagToAttraction.setInt(2, tagID);
+                    psAddTagToAttraction.executeUpdate();
+                }
+            }
+
+        }catch(SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public int getAttractionIDFromAttractionName(String name) {
+        String sql = "SELECT attractionID FROM touristattractiondb.attraction WHERE attractionName=?";
+        int idToReturn = -1;
+
+        try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, name);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                idToReturn = rs.getInt("attractionID");
+            }
+        }catch(SQLException e) {
+            e.printStackTrace();
+        }
+
+        if (idToReturn == -1) {
+            throw new NoSuchElementException("No attraction found with the name: "+name);
+        } else {
+            return idToReturn;
+        }
     }
 
     //nedenstående metode benyttes til tjek af om attraktion allerede er oprettet.
