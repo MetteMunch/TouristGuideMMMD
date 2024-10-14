@@ -8,11 +8,11 @@ public class TouristAttraction {
     private int attractionID;
     private String name;
     private String description;
-    private int postalCode;
+    private Location postalCode;
     private List<Tag> tagListe;
 
 
-    public TouristAttraction(String name, String description, int postalCode, List<Tag> tags){
+    public TouristAttraction(String name, String description, Location postalCode, List<Tag> tags){
         this.name = name;
         this.description = description;
         this.postalCode = postalCode;
@@ -37,11 +37,11 @@ public class TouristAttraction {
     public void setDescription(String description){
         this.description = description;
     }
-    public int getPostalCode(){
+    public Location getPostalCode(){
         return postalCode;
     }
 
-    public void setPostalCode(int postalCode){
+    public void setPostalCode(Location postalCode){
         this.postalCode = postalCode;
     }
     public int getAttractionID(){
