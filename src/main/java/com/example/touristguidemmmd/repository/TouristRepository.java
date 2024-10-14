@@ -53,10 +53,10 @@ public class TouristRepository {
 
     public List<TouristAttraction> getFullTouristRepository() {
         Map<Integer, TouristAttraction> attractionMap = new HashMap<>(); // denne map skal vi bruge til at gemme unikke attraktioner efter kald i databasen, så der ikke
-        //oprettes flere af den samme attraktion, hvis den har flere tags tilknyttet.
+        //oprettes flere af den samme attraktion, hvis den samme attraktion har flere tags tilknyttet.
         List<TouristAttraction> fullAttractionList = new ArrayList<>(); //den endelige liste, som returneres
 
-        try (
+        try (  //try catch med ressource, som lukkes hvis ikke true
                 Connection con = DriverManager.getConnection(url, user, pass);
                 Statement stmt = con.createStatement()) {
 
@@ -75,7 +75,7 @@ public class TouristRepository {
                 int attractionID = rs.getInt("ID"); //attribut der skal bruges i Map
                 String tagName = rs.getString("tag"); //attribut der skal bruges i Map
 
-                TouristAttraction ta =attractionMap.get(attractionID);
+                TouristAttraction ta = attractionMap.get(attractionID);
                 if(ta == null) {
                     ta = new TouristAttraction(
                             rs.getString("attName"),
@@ -108,6 +108,13 @@ public class TouristRepository {
         return null;
 
     }
+    //Denne SQL skal bruges til ovenstående
+    //SELECT tag.tagName FROM tag
+    //JOIN attractiontag ON
+    //attractiontag.tagID = tag.tagID
+    //JOIN attraction ON
+    //attraction.attractionID = attractiontag.attractionID
+    //WHERE attraction.attractionName LIKE 'Tivoli';
 
     public TouristAttraction getByNameTouristRepository(String name) {
         for (TouristAttraction t : touristRepository) {
