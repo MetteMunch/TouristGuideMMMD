@@ -69,12 +69,12 @@ public class TouristAttraction {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TouristAttraction that = (TouristAttraction) o;
-        return Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(postalCode, that.postalCode) && Objects.equals(tagListe, that.tagListe);
+        return Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(by, that.by) && Objects.equals(tagListe, that.tagListe);
     }
 
     @Override // denne hører til ovennævnte metode
     public int hashCode() {
-        return Objects.hash(name, description, postalCode, tagListe);
+        return Objects.hash(name, description, by, tagListe);
     }
 }
 
