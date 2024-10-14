@@ -4,27 +4,32 @@ import com.example.touristguidemmmd.model.Tag;
 import com.example.touristguidemmmd.model.TouristAttraction;
 import org.springframework.stereotype.Repository;
 
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Repository // annotation som fortæller Spring, at denne klasse har ansvar for adgang til data (fx databaseadministration)
+@Repository
+// annotation som fortæller Spring, at denne klasse har ansvar for adgang til data (fx databaseadministration)
 public class TouristRepository {
 
-    private final List<TouristAttraction> touristRepository = new ArrayList<>();
+    //private final List<TouristAttraction> touristRepository = new ArrayList<>();
+    public String url = "jdbc:mysql://localhost:3306/TouristAttarctionDB";
+    public String user = "TeamMMMD";
+    public String pass = "PassTeamMMMD";
 
     public TouristRepository() {
-        addHardcodetDataTilListe();
+        //addHardcodetDataTilListe();
     }
 
     /////////////////////CRUD/////////////////////
-    public void addHardcodetDataTilListe() {
-        touristRepository.add(new TouristAttraction("Tivoli", "Forlystelsespark i centrum af KBH", "København", List.of(Tag.FORLYSTELSE, Tag.PARK, Tag.RESTAURANT)));
-        touristRepository.add(new TouristAttraction("Frederiksberg Have", "Åben park midt på Frederiksberg", "Frederiksberg", List.of(Tag.PARK, Tag.NATUR)));
-        touristRepository.add(new TouristAttraction("Københavns Museum", "Museum i KBH der dækker over københavns historie", "København", List.of(Tag.MUSEUM)));
-    }
+//    public void addHardcodetDataTilListe() {
+//        touristRepository.add(new TouristAttraction("Tivoli", "Forlystelsespark i centrum af KBH", "København", List.of(Tag.FORLYSTELSE, Tag.PARK, Tag.RESTAURANT)));
+//        touristRepository.add(new TouristAttraction("Frederiksberg Have", "Åben park midt på Frederiksberg", "Frederiksberg", List.of(Tag.PARK, Tag.NATUR)));
+//        touristRepository.add(new TouristAttraction("Københavns Museum", "Museum i KBH der dækker over københavns historie", "København", List.of(Tag.MUSEUM)));
+//    }
 
     public void addTouristAttraction(String name, String description, String by, List<Tag> tags) {
-        if(checkIfAttractionAlreadyExist(name)){
+        if (checkIfAttractionAlreadyExist(name)) {
             throw new IllegalArgumentException("Attraktion med dette navn eksisterer allerede");
             //denne fejlmeddelelse fanges i Controllerens POST metode (save), hvor der vil
             //komme en meddelelse til brugeren om at attraktionen allerede findes
@@ -36,8 +41,8 @@ public class TouristRepository {
     //boolean resultat anvendes så i ovenstående add metode
 
     public boolean checkIfAttractionAlreadyExist(String name) {
-        for(TouristAttraction attraction : touristRepository){
-            if(attraction.getName().equalsIgnoreCase(name)){
+        for (TouristAttraction attraction : touristRepository) {
+            if (attraction.getName().equalsIgnoreCase(name)) {
                 return true;
             }
         }
@@ -45,12 +50,28 @@ public class TouristRepository {
     }
 
     public List<TouristAttraction> getFullTouristRepository() {
-        return touristRepository;
+        List<TouristAttraction> fullAttractionList = new ArrayList<>();
+
+        try (
+                Connection con = DriverManager.getConnection(url, user, pass);
+                Statement stmt = con.createStatement()) {
+            String SQL = "SELECT * FROM attraction";
+            ResultSet rs = stmt.executeQuery(SQL);
+
+            while(rs.next()){
+                TouristAttraction attraction
+                System.out.println();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return fullAttractionList;
     }
 
-    public List<Tag> getListOfTags(String name){
-        for (TouristAttraction t : touristRepository){
-            if(t.getName().equalsIgnoreCase(name)){
+    public List<Tag> getListOfTags(String name) {
+        for (TouristAttraction t : touristRepository) {
+            if (t.getName().equalsIgnoreCase(name)) {
                 return t.getTagListe();
             }
         }
@@ -67,7 +88,7 @@ public class TouristRepository {
         return null;
     }
 
-    public void updateAttraction (String name,String description, String by, List<Tag> tagListe) {
+    public void updateAttraction(String name, String description, String by, List<Tag> tagListe) {
         for (TouristAttraction t : touristRepository) {
             if (name.equalsIgnoreCase(t.getName())) {
                 t.setDescription(description);
@@ -86,7 +107,6 @@ public class TouristRepository {
         }
         return result;
     }
-
 
 
     public void deleteAttraction(TouristAttraction ta) {

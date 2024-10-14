@@ -5,16 +5,17 @@ import java.util.List;
 import java.util.Objects;
 
 public class TouristAttraction {
+    private int attractionID;
     private String name;
     private String description;
-    private String by;
+    private int postalCode;
     private List<Tag> tagListe;
 
 
-    public TouristAttraction(String name, String description, String by, List<Tag> tags){
+    public TouristAttraction(String name, String description, int postalCode, List<Tag> tags){
         this.name = name;
         this.description = description;
-        this.by = by;
+        this.postalCode = postalCode;
         this.tagListe = new ArrayList<>(tags);
     }
     public TouristAttraction() {
@@ -36,12 +37,15 @@ public class TouristAttraction {
     public void setDescription(String description){
         this.description = description;
     }
-    public String getBy(){
-        return by;
+    public int getPostalCode(){
+        return postalCode;
     }
 
-    public void setBy(String by){
-        this.by = by;
+    public void setPostalCode(int postalCode){
+        this.postalCode = postalCode;
+    }
+    public int getAttractionID(){
+        return attractionID;
     }
 
     public List<Tag> getTagListe(){
@@ -65,12 +69,12 @@ public class TouristAttraction {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TouristAttraction that = (TouristAttraction) o;
-        return Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(by, that.by) && Objects.equals(tagListe, that.tagListe);
+        return Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(postalCode, that.postalCode) && Objects.equals(tagListe, that.tagListe);
     }
 
     @Override // denne hører til ovennævnte metode
     public int hashCode() {
-        return Objects.hash(name, description, by, tagListe);
+        return Objects.hash(name, description, postalCode, tagListe);
     }
 }
 
