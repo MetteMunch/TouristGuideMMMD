@@ -3,7 +3,6 @@ package com.example.touristguidemmmd.repository;
 import com.example.touristguidemmmd.model.Tag;
 import com.example.touristguidemmmd.model.TouristAttraction;
 import org.springframework.stereotype.Repository;
-import org.yaml.snakeyaml.events.Event;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -16,9 +15,9 @@ import java.util.Map;
 public class TouristRepository {
 
     private final List<TouristAttraction> touristRepository = new ArrayList<>();
-    public String url = "jdbc:mysql://localhost:3306/TouristAttractionDB";
-    public String user = "TeamMMMD";
-    public String pass = "PassTeamMMMD";
+    public String url = System.getenv("DB_URL");
+    public String user = System.getenv("DB_USER");
+    public String pass = System.getenv("DB_PASS");
 
     public TouristRepository() {
         //addHardcodetDataTilListe();
