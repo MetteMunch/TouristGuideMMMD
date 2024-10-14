@@ -69,7 +69,6 @@ public class TouristRepository {
     # Tilføjelse(CREATE) til database via TouristAttraction Objekt #
     ################################################################
      */
-
     public void addTouristAttractionToDB(TouristAttraction ta) {
         if (checkIfAttractionAlreadyExist(ta.getName())) {
             throw new IllegalArgumentException("There is already an attraction with that name.");
@@ -82,6 +81,7 @@ public class TouristRepository {
             ps.setString(2, ta.getDescription());
             ps.setInt(3, getPostalCodeFromCityDB(ta));
 
+            ps.executeUpdate();
             //Giver objektets tagværdier videre og assigner dem i SQL i attractiontag
             addTouristAttractionTagsToDB(ta);
 
@@ -206,6 +206,24 @@ public class TouristRepository {
         }
         return postalcodeToReturn;
     }
+    /*
+    ############################################################
+    #                   Full Attraction Lists(READ)            #
+    ############################################################
+     */
+    public List<TouristAttraction> getTouristAttractionsFromDB() {
+        String sql ="SELECT attractionName, attractionDesc FROM attraction";
+
+        try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+        }catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     //nedenstående metode benyttes til tjek af om attraktion allerede er oprettet.
     //boolean resultat anvendes så i ovenstående add metode
