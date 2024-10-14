@@ -25,6 +25,15 @@ public class TouristService {
     public String getCityFromDB(int attractionID) {
         return tr.getCityFromDB(attractionID);
     }
+    public void addTouristAttractionToDB(TouristAttraction ta) {
+        tr.addTouristAttractionToDB(ta);
+    }
+    public void addTouristAttractionTagsToDB(TouristAttraction ta) {
+        tr.addTouristAttractionTagsToDB(ta);
+    }
+    public int getPostalCodeFromCityDB(TouristAttraction ta) {
+        return tr.getPostalCodeFromCityDB(ta);
+    }
 
     //------------------------------------
     public void addTouristAttraction(String name, String description, String by, List<Tag> tags) {

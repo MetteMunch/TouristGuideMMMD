@@ -66,6 +66,9 @@ public class TouristRepository {
     }
 
     public void addTouristAttractionToDB(TouristAttraction ta) {
+        if (checkIfAttractionAlreadyExist(ta.getName())) {
+            throw new IllegalArgumentException("There is already an attraction with that name.");
+        }
         String sqlAddAttraction = "INSERT INTO attraction(attractionID, attractionName, attractionDesc, postalcode) VALUES(?,?,?)";
 
         try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
@@ -85,7 +88,6 @@ public class TouristRepository {
         String sqlGetTagID ="SELECT tagID FROM tag where tagName =?";
         String sqlAddTagsToAttractionDB ="INSERT INTO attractiontag(attractionID, tagID) VALUES(?, ?)";
 
-
         try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
             //Hente eksisterende tag
             PreparedStatement psGetTagID = con.prepareStatement(sqlGetTagID);
@@ -100,7 +102,6 @@ public class TouristRepository {
 
                 if (rs.next()) {
                     int tagID = rs.getInt("tagID");
-
                     psAddTagToAttraction.setInt(2, tagID);
                     psAddTagToAttraction.executeUpdate();
                 }
@@ -137,10 +138,19 @@ public class TouristRepository {
     //boolean resultat anvendes så i ovenstående add metode
 
     public boolean checkIfAttractionAlreadyExist(String name) {
-        for(TouristAttraction attraction : touristRepository){
-            if(attraction.getName().equalsIgnoreCase(name)){
-                return true;
+        String sql = "SELECT attractionName FROM attraction WHERE LOWER (attractionName)=LOWER(?)";
+
+        try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, name);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                if (name.equals(rs.getString("attractionName"))) {
+                    return true;
+                }
             }
+        }catch(SQLException e) {
+            e.printStackTrace();
         }
         return false;
     }
@@ -172,7 +182,7 @@ public class TouristRepository {
         return tagsToReturn;
     }
     public String getCityFromDB(int attractionID) {
-        String sql ="SELECT a.attractionName, a.attractionDesc, b.city  FROM attraction a JOIN location b ON a.postalcode=b.postalcode WHERE a.attractionID=?";
+        String sql ="SELECT b.city FROM attraction a JOIN location b ON a.postalcode=b.postalcode WHERE a.attractionID=?";
         String cityToReturn=null;
 
         try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
