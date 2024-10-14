@@ -8,14 +8,14 @@ public class TouristAttraction {
     private int attractionID;
     private String name;
     private String description;
-    private Location postalCode;
+    private String by;
     private List<Tag> tagListe;
 
 
-    public TouristAttraction(String name, String description, Location postalCode, List<Tag> tags){
+    public TouristAttraction(String name, String description, String by, List<Tag> tags){
         this.name = name;
         this.description = description;
-        this.postalCode = postalCode;
+        this.by = by;
         this.tagListe = new ArrayList<>(tags);
     }
     public TouristAttraction() {
@@ -37,12 +37,12 @@ public class TouristAttraction {
     public void setDescription(String description){
         this.description = description;
     }
-    public Location getPostalCode(){
-        return postalCode;
+    public String getBy(){
+        return by;
     }
 
-    public void setPostalCode(Location postalCode){
-        this.postalCode = postalCode;
+    public void setBy(String by){
+        this.by = by;
     }
     public int getAttractionID(){
         return attractionID;

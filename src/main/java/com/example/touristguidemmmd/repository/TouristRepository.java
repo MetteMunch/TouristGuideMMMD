@@ -49,8 +49,8 @@ public class TouristRepository {
         return false;
     }
 
-    public List<TouristAttraction> getFullTouristRepository() {
-        List<TouristAttraction> fullAttractionList = new ArrayList<>();
+    public void getFullTouristRepository() {
+        //List<TouristAttraction> fullAttractionList = new ArrayList<>();
 
         try (
                 Connection con = DriverManager.getConnection(url, user, pass);
@@ -59,14 +59,13 @@ public class TouristRepository {
             ResultSet rs = stmt.executeQuery(SQL);
 
             while(rs.next()){
-                TouristAttraction attraction
-                System.out.println();
+                System.out.println(TouristAttraction);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return fullAttractionList;
+        //return fullAttractionList;
     }
 
     public List<Tag> getListOfTags(String name) {
