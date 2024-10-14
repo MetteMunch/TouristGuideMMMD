@@ -64,6 +64,11 @@ public class TouristRepository {
 //        }
         touristRepository.add(new TouristAttraction(name, description, by, tags));
     }
+    /*
+    ################################################################
+    # Tilføjelse(CREATE) til database via TouristAttraction Objekt #
+    ################################################################
+     */
 
     public void addTouristAttractionToDB(TouristAttraction ta) {
         if (checkIfAttractionAlreadyExist(ta.getName())) {
@@ -111,6 +116,11 @@ public class TouristRepository {
             e.printStackTrace();
         }
     }
+    /*
+    ############################################################
+    #                   GET FROM DATABASE                      #
+    ############################################################
+     */
     public int getAttractionIDFromAttractionName(String name) {
         String sql = "SELECT attractionID FROM touristattractiondb.attraction WHERE attractionName=?";
         int idToReturn = -1;
@@ -132,27 +142,6 @@ public class TouristRepository {
         } else {
             return idToReturn;
         }
-    }
-
-    //nedenstående metode benyttes til tjek af om attraktion allerede er oprettet.
-    //boolean resultat anvendes så i ovenstående add metode
-
-    public boolean checkIfAttractionAlreadyExist(String name) {
-        String sql = "SELECT attractionName FROM attraction WHERE LOWER (attractionName)=LOWER(?)";
-
-        try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
-            PreparedStatement ps = con.prepareStatement(sql);
-            ps.setString(1, name);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                if (name.equals(rs.getString("attractionName"))) {
-                    return true;
-                }
-            }
-        }catch(SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
     public List<Tag> getAttractionTagsFromDB(int attractionID) {
         String sql = "SELECT GROUP_CONCAT(t.tagName SEPARATOR ', ') AS tags FROM attraction a JOIN attractionTag b ON a.attractionID = b.attractionID JOIN tag t ON b.tagID = t.tagID WHERE a.attractionID=?";
@@ -218,6 +207,28 @@ public class TouristRepository {
         return postalcodeToReturn;
     }
 
+    //nedenstående metode benyttes til tjek af om attraktion allerede er oprettet.
+    //boolean resultat anvendes så i ovenstående add metode
+
+    public boolean checkIfAttractionAlreadyExist(String name) {
+        String sql = "SELECT attractionName FROM attraction WHERE LOWER (attractionName)=LOWER(?)";
+
+        try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, name);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                if (name.equals(rs.getString("attractionName"))) {
+                    return true;
+                }
+            }
+        }catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
     public List<TouristAttraction> getFullTouristRepository() {
         return touristRepository;
     }
@@ -260,8 +271,6 @@ public class TouristRepository {
         }
         return result;
     }
-
-
 
     public void deleteAttraction(TouristAttraction ta) {
         touristRepository.remove(ta);
