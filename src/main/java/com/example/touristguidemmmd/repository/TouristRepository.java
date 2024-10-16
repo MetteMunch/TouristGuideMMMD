@@ -98,43 +98,44 @@ public class TouristRepository {
         String sqlAddTagsToAttractionDB = "INSERT INTO attractiontag(attractionID, tagID) VALUES(?, ?)";
 
         try (Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+            //Hente eksisterende tag
+            PreparedStatement psGetTagID = con.prepareStatement(sqlGetTagID);
+            //Tilføje forbindelse mellem attractionID og tagID
+            PreparedStatement psAddTagToAttraction = con.prepareStatement(sqlAddTagsToAttractionDB);
+            psAddTagToAttraction.setInt(1, getAttractionIDFromAttractionName(ta.getName()));
 
+            deleteExistingAttractionTagsFromDB(ta);
+                /*
+                //^^Hvis ikke vi vælger at slette eksisterende tags, så skal der laves checks på, hvilke tagrelationer
+                der i forvejen foreligger. Det her var den lettere løsning. På denne måde holder vi en 'ren' database.
+                 */
+            System.out.println("Repository L115 Deleting tags");
+            for (Tag tag : ta.getTagListe()) {
+                psGetTagID.setString(1, tag.getDisplayName());
+                ResultSet rs = psGetTagID.executeQuery();
 
-                //Hente eksisterende tag
-                PreparedStatement psGetTagID = con.prepareStatement(sqlGetTagID);
-                //Tilføje forbindelse mellem attractionID og tagID
-                PreparedStatement psAddTagToAttraction = con.prepareStatement(sqlAddTagsToAttractionDB);
-                psAddTagToAttraction.setInt(1, getAttractionIDFromAttractionName(ta.getName()));
-
-                deleteExistingAttractionTagsFromDB(ta);
-                System.out.println("Repository L115 Deleting tags");
-                for (Tag tag : ta.getTagListe()) {
-                    psGetTagID.setString(1, tag.getDisplayName());
-                    ResultSet rs = psGetTagID.executeQuery();
-
-                    if (rs.next()) {
-                        int tagID = rs.getInt("tagID");
-                        psAddTagToAttraction.setInt(2, tagID);
-                        psAddTagToAttraction.executeUpdate();
-                    }
+                if (rs.next()) {
+                    int tagID = rs.getInt("tagID");
+                    psAddTagToAttraction.setInt(2, tagID);
+                    psAddTagToAttraction.executeUpdate();
                 }
-                System.out.println("Repository L126 Should've added tags here");
+            }
 
 
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    public void deleteExistingAttractionTagsFromDB(TouristAttraction ta) {
-        String sqlDeleteTags ="DELETE FROM attractiontag WHERE attractionID=?";
 
-        try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+    public void deleteExistingAttractionTagsFromDB(TouristAttraction ta) {
+        String sqlDeleteTags = "DELETE FROM attractiontag WHERE attractionID=?";
+
+        try (Connection con = DriverManager.getConnection(dbUrl, username, password)) {
             PreparedStatement ps = con.prepareStatement(sqlDeleteTags);
             ps.setInt(1, ta.getAttractionID());
             ps.executeUpdate();
 
-        }catch(SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -193,7 +194,7 @@ public class TouristRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println("Repository L203: Found following attractiontags: "+tagsToReturn); //TODO: DEBUG statement
+        System.out.println("Repository L203: Found following attractiontags: " + tagsToReturn); //TODO: DEBUG statement
         return tagsToReturn;
     }
 
@@ -216,19 +217,20 @@ public class TouristRepository {
         }
         return cityToReturn;
     }
+
     public List<String> getAllCitiesFromDB() {
         List<String> citiesToReturn = new ArrayList<>();
         String sql = "SELECT postalcode, city FROM location";
 
-        try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+        try (Connection con = DriverManager.getConnection(dbUrl, username, password)) {
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
+            while (rs.next()) {
                 String city = rs.getString("city");
                 citiesToReturn.add(city);
             }
 
-        }catch(SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return citiesToReturn;
@@ -291,23 +293,20 @@ public class TouristRepository {
     //TODO: HENTE BYLISTE FRA SQL I STEDET FOR HARDCODE
     //TODO: EFTER UPDATEATTRACTION() HIVE NY DATA MED OVER TIL SQL OG OVERSKRIVE DATAEN I TABELLERNE.
     public void updateTouristAttractionToDB(TouristAttraction ta) { //Forbindes med updateAttraction()
-        String sql ="UPDATE attraction SET attractionDesc=?, postalcode=? WHERE attractionID=?";
+        String sql = "UPDATE attraction SET attractionDesc=?, postalcode=? WHERE attractionID=?";
 
-        try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+        try (Connection con = DriverManager.getConnection(dbUrl, username, password)) {
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, ta.getDescription());
             ps.setInt(2, getPostalCodeFromCityDB(ta));
             ps.setInt(3, ta.getAttractionID());
-            System.out.println("inserting on postalcode: "+getPostalCodeFromCityDB(ta)); //TODO: fjern debug statements whenever
-            System.out.println("Finding city: "+ta.getBy());
-
+            System.out.println("inserting on postalcode: " + getPostalCodeFromCityDB(ta)); //TODO: fjern debug statements whenever
+            System.out.println("Finding city: " + ta.getBy());
 
             ps.executeUpdate();
             addTouristAttractionTagsToDB(ta);
 
-
-
-        }catch(SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -378,6 +377,11 @@ public class TouristRepository {
         return result;
     }
 
+    /*
+    ############################################################
+    #             DELETE ATTRACTION(DELETE)                    #
+    ############################################################
+    */
     public void deleteAttraction(TouristAttraction ta) {
         touristRepository.remove(ta);
     }

@@ -16,6 +16,9 @@
 <h1>Liste med attraktioner</h1>
 </header>
     <main>
+        <div th:if="${errorMessage}"> <!-- Bruges til at vise en fejlbesked, hvis TouristController L87-89 opfyldes. -->
+            <p th:text="${errorMessage}" style="color:red;"></p>
+        </div>
     <table>
         <thead>
         <tr><!-- tr betyder en række af celler i en tabel-->

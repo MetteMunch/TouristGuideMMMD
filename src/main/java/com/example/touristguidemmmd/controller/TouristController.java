@@ -6,6 +6,7 @@ import com.example.touristguidemmmd.service.TouristService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -82,8 +83,14 @@ public class TouristController {
     }
 
     @PostMapping("/update") //annotation der bruges til at specificere hvilken url der skal kaldes ved håndtering af en HTTP-POST-request (fx sende data via formular til server eller andet)
-    public String updateAttraction(@RequestParam String name, @RequestParam String description, @RequestParam String by, @RequestParam List<Tag> tagListe){
+    public String updateAttraction(@RequestParam String name, @RequestParam String description, @RequestParam String by, @RequestParam(required = false) List<Tag> tagListe, RedirectAttributes redirectAttributes){
+        if (tagListe == null || tagListe.isEmpty()) {
+            // Hvis taglisten er null eller tom pga ingen valgte tags fra brugeren == taglisten er tom.
+            redirectAttributes.addFlashAttribute("errorMessage", "At least one tag is required. No changes were saved.");
+            return "redirect:/attractions";
+        }
         ts.updateAttraction(name, description, by, tagListe);
+
         return "redirect:/attractions"; //redirect fortæller gå tilbage til browseren og vis denne side (så kaldet kommer fra browseren igen)
     }
 
