@@ -26,7 +26,11 @@ public class TouristAttraction {
     }
     //TEST attractionID
     public int getAttractionID() {
-        return attractionID;
+        if (attractionID == -1) {
+            throw new IllegalArgumentException("The attraction ID for "+this.name+" is invalid.");
+        } else {
+            return attractionID;
+        }
     }
     public void setAttractionID(int newID) {
         this.attractionID = newID;

@@ -5,7 +5,9 @@ import com.example.touristguidemmmd.model.TouristAttraction;
 import com.example.touristguidemmmd.repository.TouristRepository;
 import org.springframework.stereotype.Service;
 
+import java.sql.*;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service // annotation som fortæller Spring, at denne klasse styrer / servicerer forretningslogik
 public class TouristService {
@@ -36,6 +38,12 @@ public class TouristService {
     }
     public List<TouristAttraction> getTouristAttractionsFromDBConvertToObject() {
         return tr.getTouristAttractionsFromDBConvertToObject();
+    }
+    public List<String> getAllCitiesFromDB() {
+        return tr.getAllCitiesFromDB();
+    }
+    public int getAttractionIDFromAttractionName(String name) {
+        return tr.getAttractionIDFromAttractionName(name);
     }
 
     //------------------------------------

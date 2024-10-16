@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-@Repository // annotation som fortæller Spring, at denne klasse har ansvar for adgang til data (fx databaseadministration)
+@Repository
+// annotation som fortæller Spring, at denne klasse har ansvar for adgang til data (fx databaseadministration)
 public class TouristRepository {
     @Value("${spring.datasource.url}")
     private String dbUrl;
@@ -33,7 +34,7 @@ public class TouristRepository {
     }
 
     public void addTouristAttraction(String name, String description, String by, List<Tag> tags) {
-        if(checkIfAttractionAlreadyExist(name)){
+        if (checkIfAttractionAlreadyExist(name)) {
             throw new IllegalArgumentException("Attraktion med dette navn eksisterer allerede");
             //denne fejlmeddelelse fanges i Controllerens POST metode (save), hvor der vil
             //komme en meddelelse til brugeren om at attraktionen allerede findes
@@ -64,6 +65,7 @@ public class TouristRepository {
 //        }
         touristRepository.add(new TouristAttraction(name, description, by, tags));
     }
+
     /*
     ################################################################
     # Tilføjelse(CREATE) til database via TouristAttraction Objekt #
@@ -73,10 +75,10 @@ public class TouristRepository {
         if (checkIfAttractionAlreadyExist(ta.getName())) {
             throw new IllegalArgumentException("There is already an attraction with that name.");
         }
-        String sqlAddAttraction = "INSERT INTO attraction(attractionID, attractionName, attractionDesc, postalcode) VALUES(?,?,?)";
+        String sqlAddAttraction = "INSERT INTO attraction(attractionName, attractionDesc, postalcode) VALUES(?,?,?)";
 
-        try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
-            PreparedStatement ps  = con.prepareStatement(sqlAddAttraction);
+        try (Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+            PreparedStatement ps = con.prepareStatement(sqlAddAttraction);
             ps.setString(1, ta.getName());
             ps.setString(2, ta.getDescription());
             ps.setInt(3, getPostalCodeFromCityDB(ta));
@@ -85,37 +87,59 @@ public class TouristRepository {
             //Giver objektets tagværdier videre og assigner dem i SQL i attractiontag
             addTouristAttractionTagsToDB(ta);
 
-        }catch(SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
     public void addTouristAttractionTagsToDB(TouristAttraction ta) {
-        String sqlGetTagID ="SELECT tagID FROM tag where tagName =?";
-        String sqlAddTagsToAttractionDB ="INSERT INTO attractiontag(attractionID, tagID) VALUES(?, ?)";
+
+        String sqlGetTagID = "SELECT tagID FROM tag where tagName =?";
+        String sqlAddTagsToAttractionDB = "INSERT INTO attractiontag(attractionID, tagID) VALUES(?, ?)";
+
+        try (Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+
+
+                //Hente eksisterende tag
+                PreparedStatement psGetTagID = con.prepareStatement(sqlGetTagID);
+                //Tilføje forbindelse mellem attractionID og tagID
+                PreparedStatement psAddTagToAttraction = con.prepareStatement(sqlAddTagsToAttractionDB);
+                psAddTagToAttraction.setInt(1, getAttractionIDFromAttractionName(ta.getName()));
+
+                deleteExistingAttractionTagsFromDB(ta);
+                System.out.println("Repository L115 Deleting tags");
+                for (Tag tag : ta.getTagListe()) {
+                    psGetTagID.setString(1, tag.getDisplayName());
+                    ResultSet rs = psGetTagID.executeQuery();
+
+                    if (rs.next()) {
+                        int tagID = rs.getInt("tagID");
+                        psAddTagToAttraction.setInt(2, tagID);
+                        psAddTagToAttraction.executeUpdate();
+                    }
+                }
+                System.out.println("Repository L126 Should've added tags here");
+
+
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public void deleteExistingAttractionTagsFromDB(TouristAttraction ta) {
+        String sqlDeleteTags ="DELETE FROM attractiontag WHERE attractionID=?";
 
         try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
-            //Hente eksisterende tag
-            PreparedStatement psGetTagID = con.prepareStatement(sqlGetTagID);
-            //Tilføje forbindelse mellem attractionID og tagID
-            PreparedStatement psAddTagToAttraction = con.prepareStatement(sqlAddTagsToAttractionDB);
-
-            psAddTagToAttraction.setInt(1, getAttractionIDFromAttractionName(ta.getName()));
-
-            for (Tag tag : ta.getTagListe()) {
-                psGetTagID.setString(1, tag.getDisplayName());
-                ResultSet rs = psGetTagID.executeQuery();
-
-                if (rs.next()) {
-                    int tagID = rs.getInt("tagID");
-                    psAddTagToAttraction.setInt(2, tagID);
-                    psAddTagToAttraction.executeUpdate();
-                }
-            }
+            PreparedStatement ps = con.prepareStatement(sqlDeleteTags);
+            ps.setInt(1, ta.getAttractionID());
+            ps.executeUpdate();
 
         }catch(SQLException e) {
             e.printStackTrace();
         }
+
     }
+
     /*
     ############################################################
     #                   GET FROM DATABASE                      #
@@ -125,7 +149,7 @@ public class TouristRepository {
         String sql = "SELECT attractionID FROM touristattractiondb.attraction WHERE attractionName=?";
         int idToReturn = -1;
 
-        try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+        try (Connection con = DriverManager.getConnection(dbUrl, username, password)) {
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, name);
             ResultSet rs = ps.executeQuery();
@@ -133,26 +157,27 @@ public class TouristRepository {
             if (rs.next()) {
                 idToReturn = rs.getInt("attractionID");
             }
-        }catch(SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
         if (idToReturn == -1) {
-            throw new NoSuchElementException("No attraction found with the name: "+name);
+            throw new NoSuchElementException("No attraction found with the name: " + name);
         } else {
             return idToReturn;
         }
     }
+
     public List<Tag> getAttractionTagsFromDB(int attractionID) {
         String sql = "SELECT GROUP_CONCAT(t.tagName SEPARATOR ', ') AS tags FROM attraction a JOIN attractionTag b ON a.attractionID = b.attractionID JOIN tag t ON b.tagID = t.tagID WHERE a.attractionID=?";
         List<Tag> tagsToReturn = new ArrayList<>();
 
-        try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+        try (Connection con = DriverManager.getConnection(dbUrl, username, password)) {
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, attractionID);
             ResultSet rs = ps.executeQuery();
 
-            while(rs.next()) {
+            while (rs.next()) {
                 String concatStrings = rs.getString("tags");
                 if (concatStrings != null) {
                     String[] tagArr = concatStrings.split(",\\s*");
@@ -168,44 +193,66 @@ public class TouristRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println("Repository L203: Found following attractiontags: "+tagsToReturn); //TODO: DEBUG statement
         return tagsToReturn;
     }
-    public String getCityFromDB(int attractionID) {
-        String sql ="SELECT b.city FROM attraction a JOIN location b ON a.postalcode=b.postalcode WHERE a.attractionID=?";
-        String cityToReturn=null;
 
-        try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+
+    public String getCityFromDB(int attractionID) { //TODO: Tjek om valid city i DB?
+        String sql = "SELECT b.city FROM attraction a JOIN location b ON a.postalcode=b.postalcode WHERE a.attractionID=?";
+        String cityToReturn = null;
+
+        try (Connection con = DriverManager.getConnection(dbUrl, username, password)) {
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, attractionID);
             ResultSet rs = ps.executeQuery();
 
-            if(rs.next()) {
+            if (rs.next()) {
                 cityToReturn = rs.getString("city");
             }
 
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return cityToReturn;
     }
-    public int getPostalCodeFromCityDB(TouristAttraction ta) {
-        String sql = "SELECT postalcode FROM location WHERE city=?";
-        int postalcodeToReturn = -1;
+    public List<String> getAllCitiesFromDB() {
+        List<String> citiesToReturn = new ArrayList<>();
+        String sql = "SELECT postalcode, city FROM location";
 
         try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
             PreparedStatement ps = con.prepareStatement(sql);
-            ps.setString(1, ta.getBy());
             ResultSet rs = ps.executeQuery();
-
-            if (rs.next()){
-                postalcodeToReturn = rs.getInt("postalcode");
+            while(rs.next()) {
+                String city = rs.getString("city");
+                citiesToReturn.add(city);
             }
 
         }catch(SQLException e) {
             e.printStackTrace();
         }
+        return citiesToReturn;
+    }
+
+    public int getPostalCodeFromCityDB(TouristAttraction ta) {
+        String sql = "SELECT postalcode FROM location WHERE city=?";
+        int postalcodeToReturn = -1;
+
+        try (Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, ta.getBy());
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                postalcodeToReturn = rs.getInt("postalcode");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return postalcodeToReturn;
     }
+
     /*
     ############################################################
     #                   Full Attraction Lists(READ)            #
@@ -213,24 +260,24 @@ public class TouristRepository {
      */
     public List<TouristAttraction> getTouristAttractionsFromDBConvertToObject() {
         touristRepository.clear();
-        String sql ="SELECT attractionID, attractionName, attractionDesc FROM attraction";
+        String sql = "SELECT attractionID, attractionName, attractionDesc FROM attraction";
 
-        try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+        try (Connection con = DriverManager.getConnection(dbUrl, username, password)) {
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
+            while (rs.next()) {
                 int attractionID = rs.getInt("attractionID");
                 String attractionName = rs.getString("attractionName");
                 String attractionDesc = rs.getString("attractionDesc");
                 String city = getCityFromDB(attractionID); //Her bruger vi attractionID for at sammenligne attraction ID med postalcode. På den måde fanges String city.
                 List<Tag> attractionTags = new ArrayList<>(getAttractionTagsFromDB(attractionID));
                 TouristAttraction ta = new TouristAttraction(attractionName, attractionDesc, city, attractionTags);
-                ta.setAttractionID(attractionID);
+                ta.setAttractionID(attractionID); //Konstruktør sætter automatisk et nyt TA objekts ID til -1, her retter vi det til, hvad det måtte være i SQL-databasen.
 
                 touristRepository.add(ta);
             }
 
-        }catch(SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return touristRepository;
@@ -241,8 +288,28 @@ public class TouristRepository {
     #             UPDATE TOURIST ATTRACTION(UPDATE)            #
     ############################################################
      */
-    public void updateTouristAttraction() {
+    //TODO: HENTE BYLISTE FRA SQL I STEDET FOR HARDCODE
+    //TODO: EFTER UPDATEATTRACTION() HIVE NY DATA MED OVER TIL SQL OG OVERSKRIVE DATAEN I TABELLERNE.
+    public void updateTouristAttractionToDB(TouristAttraction ta) { //Forbindes med updateAttraction()
+        String sql ="UPDATE attraction SET attractionDesc=?, postalcode=? WHERE attractionID=?";
 
+        try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, ta.getDescription());
+            ps.setInt(2, getPostalCodeFromCityDB(ta));
+            ps.setInt(3, ta.getAttractionID());
+            System.out.println("inserting on postalcode: "+getPostalCodeFromCityDB(ta)); //TODO: fjern debug statements whenever
+            System.out.println("Finding city: "+ta.getBy());
+
+
+            ps.executeUpdate();
+            addTouristAttractionTagsToDB(ta);
+
+
+
+        }catch(SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     //nedenstående metode benyttes til tjek af om attraktion allerede er oprettet.
@@ -251,7 +318,7 @@ public class TouristRepository {
     public boolean checkIfAttractionAlreadyExist(String name) {
         String sql = "SELECT attractionName FROM attraction WHERE LOWER (attractionName)=LOWER(?)";
 
-        try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+        try (Connection con = DriverManager.getConnection(dbUrl, username, password)) {
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, name);
             ResultSet rs = ps.executeQuery();
@@ -260,7 +327,7 @@ public class TouristRepository {
                     return true;
                 }
             }
-        }catch(SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
@@ -271,9 +338,9 @@ public class TouristRepository {
         return touristRepository;
     }
 
-    public List<Tag> getListOfTags(String name){
-        for (TouristAttraction t : touristRepository){
-            if(t.getName().equalsIgnoreCase(name)){
+    public List<Tag> getListOfTags(String name) {
+        for (TouristAttraction t : touristRepository) {
+            if (t.getName().equalsIgnoreCase(name)) {
                 return t.getTagListe();
             }
         }
@@ -290,12 +357,13 @@ public class TouristRepository {
         return null;
     }
 
-    public void updateAttraction (String name,String description, String by, List<Tag> tagListe) {
+    public void updateAttraction(String name, String description, String by, List<Tag> tagListe) {
         for (TouristAttraction t : touristRepository) {
             if (name.equalsIgnoreCase(t.getName())) {
                 t.setDescription(description);
                 t.setBy(by);
                 t.setTagListe(tagListe);
+                updateTouristAttractionToDB(t);
             }
         }
     }

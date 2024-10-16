@@ -51,18 +51,21 @@ public class TouristController {
 
     @GetMapping("/{name}/tags") //denne metode kaldes ved URL attractions/Tivoli/tags
     public String showTagsOnSpecificAttraction(@PathVariable String name, Model model){ //Hvad er forskellen på PathVariable og RequestVariable?
-        List<Tag> tagListe = ts.getListOfTags(name);
+//        List<Tag> tagListe = ts.getListOfTags(name);
+        int attractionID = ts.getAttractionIDFromAttractionName(name);
+        List<Tag> tagListe = ts.getAttractionTagsFromDB(attractionID);
         model.addAttribute("tagListe",tagListe);
         model.addAttribute("attractionName",name);
         return "tags"; //HTML filen der skal læses
 
     }
-    @GetMapping("/{name}/edit")
+    @GetMapping("/{name}/edit") //Eksekveres ved tryk på knap i attractionList.html
     public String goToEditAttraction(@PathVariable String name, Model model){
         TouristAttraction attraction = ts.getSpecificTouristAttraction(name);
         model.addAttribute("description",attraction.getDescription());
         model.addAttribute("by",attraction.getBy());
-        model.addAttribute("byListe",List.of("København","Frederiksberg","Aarhus","Odense","Aalborg"));
+//        model.addAttribute("byListe",List.of("København","Frederiksberg","Aarhus","Odense","Aalborg"));
+        model.addAttribute("byListe",ts.getAllCitiesFromDB());
         model.addAttribute("tagListe",attraction.getTagListe());
         model.addAttribute("allPossibleTags",Tag.values());
         return "updateAttraction";
@@ -89,7 +92,8 @@ public class TouristController {
         List<Tag> tagsToPresent = new ArrayList<>();
         Collections.addAll(tagsToPresent, Tag.values());
         model.addAttribute("allTags", tagsToPresent);
-        model.addAttribute("byListe",List.of("København","Frederiksberg","Aarhus","Odense","Aalborg"));
+//        model.addAttribute("byListe",List.of("København","Frederiksberg","Aarhus","Odense","Aalborg"));
+        model.addAttribute("byListe",ts.getAllCitiesFromDB());
         return "addAttraction";
     }
 
