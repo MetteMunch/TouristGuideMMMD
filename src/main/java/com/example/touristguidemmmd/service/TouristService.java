@@ -34,6 +34,9 @@ public class TouristService {
     public int getPostalCodeFromCityDB(TouristAttraction ta) {
         return tr.getPostalCodeFromCityDB(ta);
     }
+    public List<TouristAttraction> getTouristAttractionsFromDBConvertToObject() {
+        return tr.getTouristAttractionsFromDBConvertToObject();
+    }
 
     //------------------------------------
     public void addTouristAttraction(String name, String description, String by, List<Tag> tags) {

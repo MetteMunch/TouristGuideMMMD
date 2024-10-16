@@ -211,19 +211,39 @@ public class TouristRepository {
     #                   Full Attraction Lists(READ)            #
     ############################################################
      */
-    public List<TouristAttraction> getTouristAttractionsFromDB() {
-        String sql ="SELECT attractionName, attractionDesc FROM attraction";
+    public List<TouristAttraction> getTouristAttractionsFromDBConvertToObject() {
+        touristRepository.clear();
+        String sql ="SELECT attractionID, attractionName, attractionDesc FROM attraction";
 
         try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                int attractionID = rs.getInt("attractionID");
+                String attractionName = rs.getString("attractionName");
+                String attractionDesc = rs.getString("attractionDesc");
+                String city = getCityFromDB(attractionID); //Her bruger vi attractionID for at sammenligne attraction ID med postalcode. På den måde fanges String city.
+                List<Tag> attractionTags = new ArrayList<>(getAttractionTagsFromDB(attractionID));
+                TouristAttraction ta = new TouristAttraction(attractionName, attractionDesc, city, attractionTags);
+                ta.setAttractionID(attractionID);
+
+                touristRepository.add(ta);
+            }
 
         }catch(SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return touristRepository;
     }
 
+    /*
+    ############################################################
+    #             UPDATE TOURIST ATTRACTION(UPDATE)            #
+    ############################################################
+     */
+    public void updateTouristAttraction() {
+
+    }
 
     //nedenstående metode benyttes til tjek af om attraktion allerede er oprettet.
     //boolean resultat anvendes så i ovenstående add metode

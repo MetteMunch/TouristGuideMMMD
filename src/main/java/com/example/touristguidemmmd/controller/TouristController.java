@@ -25,7 +25,8 @@ public class TouristController {
 
     @GetMapping //annotation der bruges til at specificere hvilken url der skal kaldes med HTTP GET-request for at køre en given metode
     public String getFullListOfAttractions(Model model){
-        List<TouristAttraction> fullListOfAttractions = ts.getListOfAttractions();
+//        List<TouristAttraction> fullListOfAttractions = ts.getListOfAttractions();
+        List<TouristAttraction> fullListOfAttractions = ts.getTouristAttractionsFromDBConvertToObject(); //TODO Indsat for at teste. Dette virker.
         model.addAttribute("listOfAttractions",fullListOfAttractions);
         return "attractionList";
     }
