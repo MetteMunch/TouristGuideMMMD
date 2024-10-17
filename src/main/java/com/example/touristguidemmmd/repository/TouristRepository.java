@@ -63,7 +63,11 @@ public class TouristRepository {
 //        } catch(SQLException e) {
 //            e.printStackTrace();
 //        }
-        touristRepository.add(new TouristAttraction(name, description, by, tags));
+        TouristAttraction ta = new TouristAttraction(name, description, by, tags);
+        addTouristAttractionAndTagsToDB(ta);
+
+        System.out.println(ta.getAttractionID());
+//        touristRepository.add(ta);
     }
 
     /*
@@ -71,7 +75,7 @@ public class TouristRepository {
     # Tilføjelse(CREATE) til database via TouristAttraction Objekt #
     ################################################################
      */
-    public void addTouristAttractionToDB(TouristAttraction ta) {
+    public void addTouristAttractionAndTagsToDB(TouristAttraction ta) {
         if (checkIfAttractionAlreadyExist(ta.getName())) {
             throw new IllegalArgumentException("There is already an attraction with that name.");
         }
@@ -82,13 +86,44 @@ public class TouristRepository {
             ps.setString(1, ta.getName());
             ps.setString(2, ta.getDescription());
             ps.setInt(3, getPostalCodeFromCityDB(ta));
-
             ps.executeUpdate();
+
+            int attractionID = lookUpTouristAttractionIDFromDB(ta);
+            ta.setAttractionID(attractionID);
             //Giver objektets tagværdier videre og assigner dem i SQL i attractiontag
             addTouristAttractionTagsToDB(ta);
-
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+    public void resetPrimaryKeyIncrement() { //Bruger denne metode til at 'nulstille' auto increment, ellers hopper den over primary keys, der allerede er brugte, selv efter sletning.
+        String sql ="ALTER TABLE attraction AUTO_INCREMENT = 1";
+
+        try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.executeUpdate();
+
+        }catch(SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public int lookUpTouristAttractionIDFromDB(TouristAttraction ta) {
+        String SQL = "SELECT attractionID FROM attraction WHERE attractionName=?";
+        int attractionID = -1;
+        try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setString(1, ta.getName());
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+              attractionID = rs.getInt("attractionID");
+            }
+        }catch(SQLException e) {
+            e.printStackTrace();
+        }
+        if (attractionID == -1) {
+            throw new IllegalArgumentException("Not a valid AttractionID TR L111");
+        } else {
+            return attractionID;
         }
     }
 
@@ -147,7 +182,8 @@ public class TouristRepository {
     ############################################################
      */
     public int getAttractionIDFromAttractionName(String name) {
-        String sql = "SELECT attractionID FROM touristattractiondb.attraction WHERE attractionName=?";
+        String sql = "SELECT attractionID FROM touristattractiondb.attraction WHERE LOWER(attractionName)=LOWER(?)";
+        //LOWER() er egentlig bare .toLowerCase. Bruges som equalsIgnoreCase() i det her tilfælde.
         int idToReturn = -1;
 
         try (Connection con = DriverManager.getConnection(dbUrl, username, password)) {
@@ -382,7 +418,23 @@ public class TouristRepository {
     #             DELETE ATTRACTION(DELETE)                    #
     ############################################################
     */
+
+    public void deleteAttractionFromDB(String name) {
+        String sqlDeletion="DELETE FROM attraction WHERE attractionID=?";
+
+        try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+            PreparedStatement ps = con.prepareStatement(sqlDeletion);
+            ps.setInt(1,getAttractionIDFromAttractionName(name));
+            ps.executeUpdate();
+//            resetPrimaryKeyIncrement(); //Kan bruges til at nulstille, så den ikke hopper over 'gamle' primary keys. Best practice er dog at lade den hoppe og ikke genbruge gamle primary keys.
+
+        }catch(SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
     public void deleteAttraction(TouristAttraction ta) {
+
         touristRepository.remove(ta);
     }
 }

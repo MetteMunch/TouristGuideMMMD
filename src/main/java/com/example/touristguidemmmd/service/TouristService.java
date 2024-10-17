@@ -5,9 +5,7 @@ import com.example.touristguidemmmd.model.TouristAttraction;
 import com.example.touristguidemmmd.repository.TouristRepository;
 import org.springframework.stereotype.Service;
 
-import java.sql.*;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service // annotation som fortæller Spring, at denne klasse styrer / servicerer forretningslogik
 public class TouristService {
@@ -28,7 +26,7 @@ public class TouristService {
         return tr.getCityFromDB(attractionID);
     }
     public void addTouristAttractionToDB(TouristAttraction ta) {
-        tr.addTouristAttractionToDB(ta);
+        tr.addTouristAttractionAndTagsToDB(ta);
     }
     public void addTouristAttractionTagsToDB(TouristAttraction ta) {
         tr.addTouristAttractionTagsToDB(ta);
@@ -44,6 +42,9 @@ public class TouristService {
     }
     public int getAttractionIDFromAttractionName(String name) {
         return tr.getAttractionIDFromAttractionName(name);
+    }
+    public void deleteAttractionFromDB(String name) {
+        tr.deleteAttractionFromDB(name);
     }
 
     //------------------------------------

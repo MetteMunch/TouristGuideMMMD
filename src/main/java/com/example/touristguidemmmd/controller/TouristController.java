@@ -105,22 +105,33 @@ public class TouristController {
     }
 
     @PostMapping("/save") //annotation der bruges til at specificere hvilken url der skal kaldes ved håndtering af en HTTP-POST-request (fx sende data via formular til server eller andet)
-    public String saveAttraction(@RequestParam String name, @RequestParam String description, @RequestParam String by, @RequestParam List<Tag> tagListe, Model model) {
-        try {
+    public String saveAttraction(@RequestParam String name, @RequestParam String description, @RequestParam String by, @RequestParam(required = false) List<Tag> tagListe, Model model, RedirectAttributes redirectAttributes) {
+//        try {
+//            if (tagListe == null ||tagListe.isEmpty()) {
+//                redirectAttributes.addFlashAttribute("tagsErrorMessage", "At least one tag is required. No changes were saved. L.111");
+//                return "redirect:/attractions";
+//            }
+//            ts.addTouristAttraction(name, description, by, tagListe);
+//            return "redirect:/attractions";
+//        } catch (IllegalArgumentException e) {
+//            model.addAttribute("errorMessage",e.getMessage()+"L117");
+//            //her fanges og vises fejlmeddelelse fra Repository metoden
+//            return "addAttraction";
+//        }
+        if (tagListe == null ||tagListe.isEmpty()) {
+                redirectAttributes.addFlashAttribute("tagsErrorMessage", "At least one tag is required. No changes were saved. L.111");
+                return "redirect:/attractions";
+            }
             ts.addTouristAttraction(name, description, by, tagListe);
             return "redirect:/attractions";
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("errorMessage",e.getMessage());
-            //her fanges og vises fejlmeddelelse fra Repository metoden
-            return "addAttraction";
-        }
 
     }
 
     @PostMapping("/delete/{name}")
     public String deleteAttraction(@PathVariable String name) {
-        TouristAttraction ta = ts.getSpecificTouristAttraction(name);
-        ts.deleteAttraction(ta);
+//        TouristAttraction ta = ts.getSpecificTouristAttraction(name);
+//        ts.deleteAttraction(ta);
+        ts.deleteAttractionFromDB(name);
         return "redirect:/attractions";
     }
 
