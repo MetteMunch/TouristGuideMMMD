@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 import com.example.touristguidemmmd.model.Tag;
 import com.example.touristguidemmmd.model.TouristAttraction;
 import com.example.touristguidemmmd.repository.TouristRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +28,10 @@ class TouristServiceTest {
 
     @BeforeEach
     public void setUp() throws SQLException {
-
-
     }
-
+/*
+---------------***CREATE***---------------
+ */
     @Test
     void addTouristAttractionToDB() throws SQLException {
         // Create a new TouristAttraction object
@@ -59,5 +60,37 @@ class TouristServiceTest {
 
         verify(touristRepository).addTouristAttractionTagsToDB(attraction);
     }
+    /*
+    ---------------***READ***---------------
+     */
+    @Test
+    void getTouristAttractionsFromDBConvertToObject() throws SQLException {
+        //Arrange
+        TouristAttraction attraction = new TouristAttraction();
+        attraction.setName("Eiffel Tower");
+        attraction.setDescription("First Description");
+        attraction.setBy("Paris");
+        attraction.setTagListe(List.of(Tag.DESIGN, Tag.MONUMENTER));
+        attraction.setAttractionID(1);
+        when(touristRepository.getTouristAttractionsFromDBConvertToObject()).thenReturn(List.of(attraction));
+
+        //Act
+//        touristService.addTouristAttractionToDB(attraction);
+        List<TouristAttraction> list = touristService.getTouristAttractionsFromDBConvertToObject();
+//        TouristAttraction fetchAttraction = list.get(0);
+//        fetchAttraction.setDescription("Updated Description");
+
+        //Assert
+//        Assertions.assertNotNull(fetchAttraction);
+//        Assertions.assertEquals(attraction.getName(), fetchAttraction.getName());
+//        Assertions.assertEquals(fetchAttraction.getDescription(), "Updated Description");
+        Assertions.assertEquals(1, list.size());
+        verify(touristRepository).getTouristAttractionsFromDBConvertToObject();
+
+    }
+    /*
+---------------***UPDATE***---------------
+ */
+
 
 }
