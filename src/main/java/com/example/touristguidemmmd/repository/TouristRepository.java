@@ -24,11 +24,7 @@ public class TouristRepository {
     }
 
     /////////////////////CRUD/////////////////////
-    public void addHardcodetDataTilListe() {
-        touristRepository.add(new TouristAttraction("Tivoli", "Forlystelsespark i centrum af KBH", "København", List.of(Tag.FORLYSTELSE, Tag.PARK, Tag.RESTAURANT)));
-        touristRepository.add(new TouristAttraction("Frederiksberg Have", "Åben park midt på Frederiksberg", "Frederiksberg", List.of(Tag.PARK, Tag.NATUR)));
-        touristRepository.add(new TouristAttraction("Københavns Museum", "Museum i KBH der dækker over københavns historie", "København", List.of(Tag.MUSEUM)));
-    }
+
 
     public void addTouristAttraction(String name, String description, String by, List<Tag> tags) {
         if (checkIfAttractionAlreadyExist(name)) {
@@ -36,20 +32,90 @@ public class TouristRepository {
             //denne fejlmeddelelse fanges i Controllerens POST metode (save), hvor der vil
             //komme en meddelelse til brugeren om at attraktionen allerede findes
         }
-        touristRepository.add(new TouristAttraction(name, description, by, tags));
-    }
 
-    //nedenstående metode benyttes til tjek af om attraktion allerede er oprettet.
-    //boolean resultat anvendes så i ovenstående add metode
+        String SQLattraction = "INSERT INTO attraction (attractionName, attractionDesc, postalcode) VALUES (?,?,?)";
+        String SQLattractionTag = "INSERT INTO attractiontag (atractionID, tagID) VALUES (?,?)";
 
-    public boolean checkIfAttractionAlreadyExist(String name) {
-        for (TouristAttraction attraction : touristRepository) {
-            if (attraction.getName().equalsIgnoreCase(name)) {
-                return true;
+
+        try (Connection con = DriverManager.getConnection(url, user, pass);
+             PreparedStatement pstmtAttraction = con.prepareStatement(SQLattraction, Statement.RETURN_GENERATED_KEYS);
+             PreparedStatement pstmtTag = con.prepareStatement(SQLattractionTag)) {
+
+            pstmtAttraction.setString(1, name);
+            pstmtAttraction.setString(2, description);
+            pstmtAttraction.setInt(3, getPostalCode(by));
+            int affectedRows = pstmtAttraction.executeUpdate();
+
+            if (affectedRows > 0) {
+                //Hvis der bliver oprettet en attraktion skal autogenereret nøgle hentes
+                try (ResultSet generatedKeys = pstmtAttraction.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        int attractionID = generatedKeys.getInt(1);
+
+                        pstmtTag.setInt(1, attractionID);
+                        pstmtTag.setInt(2,);
+                    }
+                }
             }
+
         }
-        return false;
+
+
     }
+
+    //Nedenstående metode laver kald til databasen, så vi kan få postnummer på den angivne by
+    public int getPostalCode(String by) {
+        String SQL = "SELECT postalcode FROM location WHERE city = ?";
+        try (Connection con = DriverManager.getConnection(url, user, pass);
+             PreparedStatement pstmt = con.prepareStatement(SQL)) {
+
+            pstmt.setString(1, by);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return rs.getInt(1); //returnerer værdien af forespørgslen (dvs. postnummer)
+            }
+
+        }
+    }
+
+    //Nedenstående metode tjekker i databasen om attraktionen allerede eksisterer
+    public boolean checkIfAttractionAlreadyExist(String attractionName) {
+        String SQL = "SELECT COUNT(*) FROM attraction WHERE attractionName = ?";
+        try (Connection con = DriverManager.getConnection(url, user, pass);
+             PreparedStatement pstmt = con.prepareStatement(SQL)) {
+
+            pstmt.setString(1, attractionName);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return rs.getInt(1) > 0; //Hvis der allerede er en attraktion med det navn, så bliver denne true og ellers false
+            }
+
+        }
+    }
+
+
+//    NEDENSTÅENDE TO METODER ER OPRETTELSE TIL LISTE OG IKKE DATABASE
+//
+//    public void addTouristAttraction(String name, String description, String by, List<Tag> tags) {
+//        if (checkIfAttractionAlreadyExist(name)) {
+//            throw new IllegalArgumentException("Attraktion med dette navn eksisterer allerede");
+//            //denne fejlmeddelelse fanges i Controllerens POST metode (save), hvor der vil
+//            //komme en meddelelse til brugeren om at attraktionen allerede findes
+//        }
+//        touristRepository.add(new TouristAttraction(name, description, by, tags));
+//    }
+//
+//    //nedenstående metode benyttes til tjek af om attraktion allerede er oprettet.
+//    //boolean resultat anvendes så i ovenstående add metode
+//
+//    public boolean checkIfAttractionAlreadyExist(String name) {
+//        for (TouristAttraction attraction : touristRepository) {
+//            if (attraction.getName().equalsIgnoreCase(name)) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     public List<TouristAttraction> getFullTouristRepository() {
         Map<Integer, TouristAttraction> attractionMap = new HashMap<>(); // denne map skal vi bruge til at gemme unikke attraktioner efter kald i databasen, så samme
@@ -153,42 +219,39 @@ public class TouristRepository {
                Connection con = DriverManager.getConnection(url, user, pass);
                PreparedStatement pstmt = con.prepareStatement(SQL)) {
 
-            pstmt.setString(1,name);
+            pstmt.setString(1, name);
 
-             try(ResultSet rs = pstmt.executeQuery()) {
-                 while (rs.next()) {
-                     int attractionID = rs.getInt("ID"); //attribut der skal bruges i Map
-                     String tagName = rs.getString("tag"); //attribut der skal bruges i Map
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    int attractionID = rs.getInt("ID"); //attribut der skal bruges i Map
+                    String tagName = rs.getString("tag"); //attribut der skal bruges i Map
 
-                     ta = attractionMap.get(attractionID);
-                     if (ta == null) {
-                         ta = new TouristAttraction(
-                                 rs.getString("attName"),
-                                 rs.getString("desp"),
-                                 rs.getString("city"),
-                                 new ArrayList<>());
-                         attractionMap.put(attractionID, ta);
-                         ta.setAttractionID(attractionID);
+                    ta = attractionMap.get(attractionID);
+                    if (ta == null) {
+                        ta = new TouristAttraction(
+                                rs.getString("attName"),
+                                rs.getString("desp"),
+                                rs.getString("city"),
+                                new ArrayList<>());
+                        attractionMap.put(attractionID, ta);
+                        ta.setAttractionID(attractionID);
 
-                     }
+                    }
 
-                     //Her tilknytter vi enum værdier baseret på eventuelle String Tagnames fra databasen via hjælpemetoden
-                     Tag tag = convertStringToTag(tagName);
-                     if (tag != null) {
-                         ta.getTagListe().add(tag); //Tagget tilknyttes til TouristAttraction
-                     }
+                    //Her tilknytter vi enum værdier baseret på eventuelle String Tagnames fra databasen via hjælpemetoden
+                    Tag tag = convertStringToTag(tagName);
+                    if (tag != null) {
+                        ta.getTagListe().add(tag); //Tagget tilknyttes til TouristAttraction
+                    }
 
-                 }
-             }
+                }
+            }
 
         } catch (SQLException | IllegalArgumentException exception) {
             exception.printStackTrace();
         }
         return ta;
     }
-
-
-
 
 
     public void updateAttraction(String name, String description, String by, List<Tag> tagListe) {
