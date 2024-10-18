@@ -52,13 +52,13 @@ public class TouristRepository {
     }
 
     public List<TouristAttraction> getFullTouristRepository() {
-        Map<Integer, TouristAttraction> attractionMap = new HashMap<>(); // denne map skal vi bruge til at gemme unikke attraktioner efter kald i databasen, så der ikke
-        //oprettes flere af den samme attraktion, hvis den samme attraktion har flere tags tilknyttet.
+        Map<Integer, TouristAttraction> attractionMap = new HashMap<>(); // denne map skal vi bruge til at gemme unikke attraktioner efter kald i databasen, så samme
+        //attraktion ikke medtages flere gange, hvis den har flere tags tilknyttet.
         List<TouristAttraction> fullAttractionList = new ArrayList<>(); //den endelige liste, som returneres
 
         try (  //try catch med ressource, som lukkes hvis ikke true
-                Connection con = DriverManager.getConnection(url, user, pass);
-                Statement stmt = con.createStatement()) {
+               Connection con = DriverManager.getConnection(url, user, pass);
+               Statement stmt = con.createStatement()) {
 
             String SQL = "SELECT attraction.attractionID AS ID, attraction.attractionName AS attName, \n" +
                     "attraction.attractionDesc AS desp, location.city AS city, tag.tagName AS tag FROM attraction\n" +
@@ -71,23 +71,23 @@ public class TouristRepository {
 
             ResultSet rs = stmt.executeQuery(SQL);
 
-            while(rs.next()){
+            while (rs.next()) {
                 int attractionID = rs.getInt("ID"); //attribut der skal bruges i Map
                 String tagName = rs.getString("tag"); //attribut der skal bruges i Map
 
                 TouristAttraction ta = attractionMap.get(attractionID);
-                if(ta == null) {
+                if (ta == null) {
                     ta = new TouristAttraction(
                             rs.getString("attName"),
                             rs.getString("desp"),
                             rs.getString("city"),
                             new ArrayList<>());
-                    attractionMap.put(attractionID,ta);
+                    attractionMap.put(attractionID, ta);
                 }
 
                 //Her tilknytter vi enum værdier baseret på eventuelle String Tagnames fra databasen via hjælpemetoden
                 Tag tag = convertStringToTag(tagName);
-                if(tag != null) {
+                if (tag != null) {
                     ta.getTagListe().add(tag); //Tagget tilknyttes til TouristAttraction
                 }
             }
@@ -100,21 +100,37 @@ public class TouristRepository {
     }
 
     public List<Tag> getListOfTags(String name) {
-        for (TouristAttraction t : touristRepository) {
-            if (t.getName().equalsIgnoreCase(name)) {
-                return t.getTagListe();
+        List<Tag> tagListe = new ArrayList<>();
+
+        String SQL = "SELECT tag.tagName FROM tag\n" +
+                "    JOIN attractiontag ON\n" +
+                "    attractiontag.tagID = tag.tagID\n" +
+                "    JOIN attraction ON\n" +
+                "    attraction.attractionID = attractiontag.attractionID\n" +
+                "    WHERE attraction.attractionName = ?";
+
+        try ( //try catch med ressource, som lukkes hvis ikke true
+              Connection con = DriverManager.getConnection(url, user, pass);
+              PreparedStatement pstmt = con.prepareStatement(SQL)) {
+
+            pstmt.setString(1, name);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    String tagName = rs.getString("tagName");
+                    //ovenstående String tagName skal konverteres til Tag
+                    Tag tag = Tag.getEnumTag(tagName);
+                    tagListe.add(tag);
+                }
             }
+        } catch (SQLException | IllegalArgumentException exception) {
+            exception.printStackTrace();
         }
-        return null;
+
+        return tagListe;
 
     }
-    //Denne SQL skal bruges til ovenstående
-    //SELECT tag.tagName FROM tag
-    //JOIN attractiontag ON
-    //attractiontag.tagID = tag.tagID
-    //JOIN attraction ON
-    //attraction.attractionID = attractiontag.attractionID
-    //WHERE attraction.attractionName LIKE 'Tivoli';
+
 
     public TouristAttraction getByNameTouristRepository(String name) {
         for (TouristAttraction t : touristRepository) {
@@ -154,8 +170,8 @@ public class TouristRepository {
 
     //metode til at konvertere String tag navnet fra databasen til tag enum værdi
     private Tag convertStringToTag(String tagName) {
-        for(Tag tag: Tag.values()) { //Her ittererer vi igennem vores enum værdier
-            if(tag.getDisplayName().equalsIgnoreCase(tagName)) {
+        for (Tag tag : Tag.values()) { //Her ittererer vi igennem vores enum værdier
+            if (tag.getDisplayName().equalsIgnoreCase(tagName)) {
                 return tag;
             }
         }
