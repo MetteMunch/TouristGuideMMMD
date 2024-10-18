@@ -44,6 +44,11 @@ public class TouristAttraction {
     public void setBy(String by){
         this.by = by;
     }
+
+    public void setAttractionID(int attractionID) {
+        this.attractionID = attractionID;
+    }
+
     public int getAttractionID(){
         return attractionID;
     }

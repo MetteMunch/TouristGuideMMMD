@@ -83,6 +83,7 @@ public class TouristRepository {
                             rs.getString("city"),
                             new ArrayList<>());
                     attractionMap.put(attractionID, ta);
+                    ta.setAttractionID(attractionID);
                 }
 
                 //Her tilknytter vi enum værdier baseret på eventuelle String Tagnames fra databasen via hjælpemetoden
@@ -133,13 +134,62 @@ public class TouristRepository {
 
 
     public TouristAttraction getByNameTouristRepository(String name) {
-        for (TouristAttraction t : touristRepository) {
-            if (t.getName().equalsIgnoreCase(name)) {
-                return t;
-            }
+        TouristAttraction ta = null;
+        Map<Integer, TouristAttraction> attractionMap = new HashMap<>(); // denne map skal vi bruge til at få
+        // attraktionen med kun én gang efter kald i databasen. Hvis en attraktion har flere tags tilknyttet vil
+        //den ellers blive vist flere gange.
+
+        String SQL = "SELECT attraction.attractionID AS ID, attraction.attractionName AS attName, \n" +
+                "attraction.attractionDesc AS desp, location.city AS city, tag.tagName AS tag FROM attraction\n" +
+                "JOIN location ON\n" +
+                "attraction.postalcode = location.postalcode\n" +
+                "JOIN attractiontag ON\n" +
+                "attraction.attractionID = attractiontag.attractionID\n" +
+                "JOIN tag ON\n" +
+                "tag.tagID = attractiontag.tagID\n" +
+                "HAVING attName = ?;";
+
+        try (  //try catch med ressource, som lukkes hvis ikke true
+               Connection con = DriverManager.getConnection(url, user, pass);
+               PreparedStatement pstmt = con.prepareStatement(SQL)) {
+
+            pstmt.setString(1,name);
+
+             try(ResultSet rs = pstmt.executeQuery()) {
+                 while (rs.next()) {
+                     int attractionID = rs.getInt("ID"); //attribut der skal bruges i Map
+                     String tagName = rs.getString("tag"); //attribut der skal bruges i Map
+
+                     ta = attractionMap.get(attractionID);
+                     if (ta == null) {
+                         ta = new TouristAttraction(
+                                 rs.getString("attName"),
+                                 rs.getString("desp"),
+                                 rs.getString("city"),
+                                 new ArrayList<>());
+                         attractionMap.put(attractionID, ta);
+                         ta.setAttractionID(attractionID);
+
+                     }
+
+                     //Her tilknytter vi enum værdier baseret på eventuelle String Tagnames fra databasen via hjælpemetoden
+                     Tag tag = convertStringToTag(tagName);
+                     if (tag != null) {
+                         ta.getTagListe().add(tag); //Tagget tilknyttes til TouristAttraction
+                     }
+
+                 }
+             }
+
+        } catch (SQLException | IllegalArgumentException exception) {
+            exception.printStackTrace();
         }
-        return null;
+        return ta;
     }
+
+
+
+
 
     public void updateAttraction(String name, String description, String by, List<Tag> tagListe) {
         for (TouristAttraction t : touristRepository) {

@@ -11,16 +11,24 @@ public class Main {
     public static void main(String[] args) {
         TouristRepository tr = new TouristRepository();
 
-        for(TouristAttraction ta: tr.getFullTouristRepository()){
-            System.out.println(ta + " " +ta.getTagListe());
-        }
+//        for(TouristAttraction ta: tr.getFullTouristRepository()){
+//            System.out.println(ta + " " +ta.getTagListe());
+//        }
+//
+//        System.out.println("");
+//
+//        List<Tag> list = tr.getListOfTags("Aros");
+//        for(Tag tag: list){
+//            System.out.println(tag);
+//        }
+//
+//        System.out.println("");
 
-        System.out.println("");
-
-        List<Tag> list = tr.getListOfTags("Aros");
-        for(Tag tag: list){
-            System.out.println(tag);
-        }
+        TouristAttraction ta = tr.getByNameTouristRepository("Aros");
+        System.out.println(ta);
+        System.out.println("AttID: " +ta.getAttractionID());
+        System.out.println("By: " +ta.getBy());
+        System.out.println(ta.getTagListe());
 
 
     }
