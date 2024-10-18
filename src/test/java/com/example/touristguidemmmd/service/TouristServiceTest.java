@@ -27,13 +27,13 @@ class TouristServiceTest {
 
 
     @BeforeEach
-    public void setUp() throws SQLException {
+    public void setUp() {
     }
 /*
 ---------------***CREATE***---------------
  */
     @Test
-    void addTouristAttractionToDB() throws SQLException {
+    void addTouristAttractionToDB() {
         // Create a new TouristAttraction object
         TouristAttraction attraction = new TouristAttraction();
         attraction.setName("Eiffel Tower");
@@ -64,7 +64,7 @@ class TouristServiceTest {
     ---------------***READ***---------------
      */
     @Test
-    void getTouristAttractionsFromDBConvertToObject() throws SQLException {
+    void getTouristAttractionsFromDBConvertToObject() {
         //Arrange
         TouristAttraction attraction = new TouristAttraction();
         attraction.setName("Eiffel Tower");
@@ -75,15 +75,9 @@ class TouristServiceTest {
         when(touristRepository.getTouristAttractionsFromDBConvertToObject()).thenReturn(List.of(attraction));
 
         //Act
-//        touristService.addTouristAttractionToDB(attraction);
-        List<TouristAttraction> list = touristService.getTouristAttractionsFromDBConvertToObject();
-//        TouristAttraction fetchAttraction = list.get(0);
-//        fetchAttraction.setDescription("Updated Description");
 
-        //Assert
-//        Assertions.assertNotNull(fetchAttraction);
-//        Assertions.assertEquals(attraction.getName(), fetchAttraction.getName());
-//        Assertions.assertEquals(fetchAttraction.getDescription(), "Updated Description");
+        List<TouristAttraction> list = touristService.getTouristAttractionsFromDBConvertToObject();
+
         Assertions.assertEquals(1, list.size());
         verify(touristRepository).getTouristAttractionsFromDBConvertToObject();
 
@@ -91,6 +85,43 @@ class TouristServiceTest {
     /*
 ---------------***UPDATE***---------------
  */
+    @Test
+    void updateAttraction() {
+        //Arrange
+        TouristAttraction ta1 = new TouristAttraction("Eiffel Tower", "DescriptionET", "Paris", List.of(Tag.DESIGN, Tag.MONUMENTER));
+        ta1.setAttractionID(1);
+        when(touristRepository.getTouristAttractionsFromDBConvertToObject()).thenReturn(List.of(ta1));
 
+        //Act
+        List<TouristAttraction> list = touristService.getTouristAttractionsFromDBConvertToObject();
+        touristService.updateAttraction(ta1.getName(), ta1.getDescription(), ta1.getBy(), ta1.getTagListe());
+
+        //Assert
+        Assertions.assertEquals(1, list.size());
+
+        TouristAttraction attraction = list.get(0);
+
+        verify(touristRepository).updateAttraction(ta1.getName(), ta1.getDescription(), ta1.getBy(), ta1.getTagListe());
+        attraction.setDescription("UpdatedDescriptionET");
+        Assertions.assertEquals("UpdatedDescriptionET", attraction.getDescription());
+
+    }
+/*
+---------------***DELETE***---------------
+ */
+    @Test
+    void deleteAttraction() {
+        //Arrange
+        TouristAttraction ta = new TouristAttraction("Eiffel Tower", "DescriptionET", "Paris", List.of(Tag.DESIGN, Tag.MONUMENTER));
+
+        //Act
+        List<TouristAttraction> list = List.of(ta);
+        touristService.deleteAttraction(ta);
+
+        //Assert
+
+        verify(touristRepository).deleteAttraction(ta);
+
+    }
 
 }
