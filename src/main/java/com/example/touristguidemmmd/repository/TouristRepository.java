@@ -332,6 +332,11 @@ public class TouristRepository {
         String sql = "UPDATE attraction SET attractionDesc=?, postalcode=? WHERE attractionID=?";
 
         try (Connection con = DriverManager.getConnection(dbUrl, username, password)) {
+            /*
+            //Vi kalder bare på attractions egne attributter, da denne metode bliver kaldt lige efter nye værdier
+            bliver indsat via setter-metoder i updateAttraction(String name, String description,
+            String by, List<Tag> tagListe) i Repository.
+             */
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, ta.getDescription());
             ps.setInt(2, getPostalCodeFromCityDB(ta));
@@ -346,6 +351,17 @@ public class TouristRepository {
             e.printStackTrace();
         }
     }
+    public void updateAttraction(String name, String description, String by, List<Tag> tagListe) {
+        for (TouristAttraction t : touristRepository) {
+            if (name.equalsIgnoreCase(t.getName())) {
+                t.setDescription(description);
+                t.setBy(by);
+                t.setTagListe(tagListe);
+                updateTouristAttractionToDB(t);
+            }
+        }
+    }
+
 
     //nedenstående metode benyttes til tjek af om attraktion allerede er oprettet.
     //boolean resultat anvendes så i ovenstående add metode
@@ -392,16 +408,7 @@ public class TouristRepository {
         return null;
     }
 
-    public void updateAttraction(String name, String description, String by, List<Tag> tagListe) {
-        for (TouristAttraction t : touristRepository) {
-            if (name.equalsIgnoreCase(t.getName())) {
-                t.setDescription(description);
-                t.setBy(by);
-                t.setTagListe(tagListe);
-                updateTouristAttractionToDB(t);
-            }
-        }
-    }
+
 
     public String getDescription(String name) {
         String result = "";
