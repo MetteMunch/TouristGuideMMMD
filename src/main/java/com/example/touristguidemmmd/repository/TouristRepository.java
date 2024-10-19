@@ -34,12 +34,14 @@ public class TouristRepository {
         }
 
         String SQLattraction = "INSERT INTO attraction (attractionName, attractionDesc, postalcode) VALUES (?,?,?)";
-        String SQLattractionTag = "INSERT INTO attractiontag (atractionID, tagID) VALUES (?,?)";
+        String SQLattractionTag = "INSERT INTO attractiontag (attractionID, tagID) VALUES (?,?)";
+        String SQLtag = "SELECT tagID FROM tag WHERE tagName = ?";
 
 
         try (Connection con = DriverManager.getConnection(url, user, pass);
              PreparedStatement pstmtAttraction = con.prepareStatement(SQLattraction, Statement.RETURN_GENERATED_KEYS);
-             PreparedStatement pstmtTag = con.prepareStatement(SQLattractionTag)) {
+             PreparedStatement pstmtTag = con.prepareStatement(SQLattractionTag);
+             PreparedStatement pstmtTagSelect = con.prepareStatement((SQLtag))) {
 
             pstmtAttraction.setString(1, name);
             pstmtAttraction.setString(2, description);
@@ -51,13 +53,31 @@ public class TouristRepository {
                 try (ResultSet generatedKeys = pstmtAttraction.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         int attractionID = generatedKeys.getInt(1);
+                        System.out.println("attractionID: " +attractionID);
 
-                        pstmtTag.setInt(1, attractionID);
-                        pstmtTag.setInt(2,);
+                        //iterer genne Taglisten og behandler hvert tag
+                        for (Tag tag : tags) {
+                            pstmtTagSelect.setString(1, tag.name()); //bruger Enum tag navnet som tagName
+                            try (ResultSet rsTag = pstmtTagSelect.executeQuery()) {
+                                if (rsTag.next()) {
+                                    int tagID = rsTag.getInt("tagID");
+
+                                    //indsæt link mellem attraktion og tag i attractionTag tabellen
+                                    pstmtTag.setInt(1, attractionID);
+                                    pstmtTag.setInt(2, tagID);
+                                    pstmtTag.executeUpdate();
+
+                                }
+                            }
+                        }
+
+
                     }
                 }
             }
 
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
 
 
@@ -65,6 +85,7 @@ public class TouristRepository {
 
     //Nedenstående metode laver kald til databasen, så vi kan få postnummer på den angivne by
     public int getPostalCode(String by) {
+        int result = 0;
         String SQL = "SELECT postalcode FROM location WHERE city = ?";
         try (Connection con = DriverManager.getConnection(url, user, pass);
              PreparedStatement pstmt = con.prepareStatement(SQL)) {
@@ -72,14 +93,21 @@ public class TouristRepository {
             pstmt.setString(1, by);
 
             try (ResultSet rs = pstmt.executeQuery()) {
-                return rs.getInt(1); //returnerer værdien af forespørgslen (dvs. postnummer)
+                if (rs.next()) { //flytter markøren til den første række
+                    result = rs.getInt(1); //returnerer værdien af forespørgslen (dvs. postnummer)
+                    System.out.println("postalCode: " +result); //kun til debugging
+                }
             }
 
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
+        return result;
     }
 
     //Nedenstående metode tjekker i databasen om attraktionen allerede eksisterer
     public boolean checkIfAttractionAlreadyExist(String attractionName) {
+        boolean result = false;
         String SQL = "SELECT COUNT(*) FROM attraction WHERE attractionName = ?";
         try (Connection con = DriverManager.getConnection(url, user, pass);
              PreparedStatement pstmt = con.prepareStatement(SQL)) {
@@ -87,10 +115,15 @@ public class TouristRepository {
             pstmt.setString(1, attractionName);
 
             try (ResultSet rs = pstmt.executeQuery()) {
-                return rs.getInt(1) > 0; //Hvis der allerede er en attraktion med det navn, så bliver denne true og ellers false
+                if (rs.next()) { //flytter pointeren til den første række
+                    result = rs.getInt(1) > 0; //Hvis der allerede er en attraktion med det navn, så bliver denne true og ellers false
+                }
             }
 
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
+        return result;
     }
 
 
