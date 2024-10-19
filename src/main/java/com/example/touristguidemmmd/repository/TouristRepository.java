@@ -53,7 +53,6 @@ public class TouristRepository {
                 try (ResultSet generatedKeys = pstmtAttraction.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         int attractionID = generatedKeys.getInt(1);
-                        System.out.println("attractionID: " +attractionID);
 
                         //iterer genne Taglisten og behandler hvert tag
                         for (Tag tag : tags) {
@@ -95,7 +94,6 @@ public class TouristRepository {
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) { //flytter markøren til den første række
                     result = rs.getInt(1); //returnerer værdien af forespørgslen (dvs. postnummer)
-                    System.out.println("postalCode: " +result); //kun til debugging
                 }
             }
 
@@ -126,29 +124,6 @@ public class TouristRepository {
         return result;
     }
 
-
-//    NEDENSTÅENDE TO METODER ER OPRETTELSE TIL LISTE OG IKKE DATABASE
-//
-//    public void addTouristAttraction(String name, String description, String by, List<Tag> tags) {
-//        if (checkIfAttractionAlreadyExist(name)) {
-//            throw new IllegalArgumentException("Attraktion med dette navn eksisterer allerede");
-//            //denne fejlmeddelelse fanges i Controllerens POST metode (save), hvor der vil
-//            //komme en meddelelse til brugeren om at attraktionen allerede findes
-//        }
-//        touristRepository.add(new TouristAttraction(name, description, by, tags));
-//    }
-//
-//    //nedenstående metode benyttes til tjek af om attraktion allerede er oprettet.
-//    //boolean resultat anvendes så i ovenstående add metode
-//
-//    public boolean checkIfAttractionAlreadyExist(String name) {
-//        for (TouristAttraction attraction : touristRepository) {
-//            if (attraction.getName().equalsIgnoreCase(name)) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
 
     public List<TouristAttraction> getFullTouristRepository() {
         Map<Integer, TouristAttraction> attractionMap = new HashMap<>(); // denne map skal vi bruge til at gemme unikke attraktioner efter kald i databasen, så samme
@@ -287,16 +262,69 @@ public class TouristRepository {
     }
 
 
-    public void updateAttraction(String name, String description, String by, List<Tag> tagListe) {
-        for (TouristAttraction t : touristRepository) {
-            if (name.equalsIgnoreCase(t.getName())) {
-                t.setDescription(description);
-                t.setBy(by);
-                t.setTagListe(tagListe);
-            }
+//    public void updateAttraction(String name, String description, String by, List<Tag> tagListe) {
+//        for (TouristAttraction t : touristRepository) {
+//            if (name.equalsIgnoreCase(t.getName())) {
+//                t.setDescription(description);
+//                t.setBy(by);
+//                t.setTagListe(tagListe);
+//            }
+//        }
+//    }
+
+    ///TODO: Denne er jeg ved at tilrette...mangler i forhold til korrekt opdatering af tags (de gamle skal fjernes)
+    public void updateAttraction(String name, String description, String by, List<Tag> tags) {
+        int attID = getByNameTouristRepository(name).getAttractionID();
+        if (attID == 0) {
+            throw new IllegalArgumentException("Attraktion med dette navn eksisterer ikke");
+            //denne fejlmeddelelse skal fanges i Controllerens metode, hvor der skal
+            //komme en meddelelse til brugeren om at attraktionen ikke findes og derfor ikke kan updateres
         }
+
+        String SQLattraction = "UPDATE attraction SET attractionDesc = ?, postalcode = ? WHERE attractionID = ?";
+        //Forespørgslen ved opdatering af attractionTag bliver som INSERT INTO i stedet for UPDATE da sammensat nøgle
+        String SQLattractionTag = "INSERT INTO attractiontag (attractionID, tagID) VALUES (?,?) ON DUPLICATE KEY UPDATE tagID = ?";
+        String SQLtag = "SELECT tagID FROM tag WHERE tagName = ?";
+
+
+        try (Connection con = DriverManager.getConnection(url, user, pass);
+             PreparedStatement pstmtAttraction = con.prepareStatement(SQLattraction);
+             PreparedStatement pstmtTag = con.prepareStatement(SQLattractionTag);
+             PreparedStatement pstmtTagSelect = con.prepareStatement((SQLtag))) {
+
+            pstmtAttraction.setString(1, description);
+            pstmtAttraction.setInt(2, getPostalCode(by));
+            pstmtAttraction.setInt(3, attID);
+            int affectedRows = pstmtAttraction.executeUpdate();
+
+
+            //iterer gennemm Taglisten og behandler hvert tag
+            for (Tag tag : tags) {
+                pstmtTagSelect.setString(1, tag.name()); //bruger Enum tag navnet som tagName
+                try (ResultSet rsTag = pstmtTagSelect.executeQuery()) {
+                    if (rsTag.next()) {
+                        int tagID = rsTag.getInt("tagID");
+
+                        //indsæt link mellem attraktion og tag i attractionTag tabellen
+                        pstmtTag.setInt(1, attID);
+                        pstmtTag.setInt(2, tagID);
+                        pstmtTag.setInt(3, tagID);//Bruges ved ON DUPLICATE KEY, dvs. hvis kombinationen allerede findes, så overskriver den med samme
+                        //værdisæt igen uden at komme med fejl
+                        pstmtTag.executeUpdate();
+
+                    }
+                }
+            }
+
+
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
+
     }
 
+//TODO: denne mangler JDBC
     public String getDescription(String name) {
         String result = "";
         for (TouristAttraction t : touristRepository) {
@@ -307,7 +335,7 @@ public class TouristRepository {
         return result;
     }
 
-
+    //TODO: denne mangler JDBC
     public void deleteAttraction(TouristAttraction ta) {
         touristRepository.remove(ta);
     }
