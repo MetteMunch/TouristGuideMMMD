@@ -262,16 +262,6 @@ public class TouristRepository {
     }
 
 
-//    public void updateAttraction(String name, String description, String by, List<Tag> tagListe) {
-//        for (TouristAttraction t : touristRepository) {
-//            if (name.equalsIgnoreCase(t.getName())) {
-//                t.setDescription(description);
-//                t.setBy(by);
-//                t.setTagListe(tagListe);
-//            }
-//        }
-//    }
-
     public void updateAttraction(String name, String description, String by, List<Tag> tags) {
         int attID = getByNameTouristRepository(name).getAttractionID();
         if (attID == 0) {
@@ -300,7 +290,7 @@ public class TouristRepository {
             pstmtAttraction.executeUpdate();
 
             //HER SLETTES DE OPRINDELIGE TAGS SÆT (attractiontac tabellen)
-            pstmtDelete.setInt(1,attID);
+            pstmtDelete.setInt(1, attID);
             pstmtDelete.executeUpdate();
 
 
@@ -333,10 +323,10 @@ public class TouristRepository {
 
         String SQL = "SELECT attractionDesc FROM attraction WHERE attractionName = ?";
 
-        try (Connection con = DriverManager.getConnection(url,user,pass);
+        try (Connection con = DriverManager.getConnection(url, user, pass);
              PreparedStatement pstmt = con.prepareStatement(SQL)) {
 
-            pstmt.setString(1,name);
+            pstmt.setString(1, name);
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
@@ -350,9 +340,20 @@ public class TouristRepository {
         return result;
     }
 
-    //TODO: denne mangler JDBC
+
     public void deleteAttraction(TouristAttraction ta) {
-        touristRepository.remove(ta);
+
+        int attractionID = ta.getAttractionID();
+
+        String SQL = "DELETE FROM attraction WHERE attractionID = ?";
+
+        try (Connection con = DriverManager.getConnection(url, user, pass);
+             PreparedStatement pstmt = con.prepareStatement(SQL)) {
+            pstmt.setInt(1, attractionID);
+            pstmt.executeUpdate();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
     }
 
     //////////////////hjælpe metoder////////////////////
