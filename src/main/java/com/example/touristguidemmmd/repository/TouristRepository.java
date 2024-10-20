@@ -282,34 +282,39 @@ public class TouristRepository {
         }
 
         String SQLattraction = "UPDATE attraction SET attractionDesc = ?, postalcode = ? WHERE attractionID = ?";
+        String SQLdeleteTags = "DELETE FROM attractiontag WHERE attractionID = ?";
         //Forespørgslen ved opdatering af attractionTag bliver som INSERT INTO i stedet for UPDATE da sammensat nøgle
-        String SQLattractionTag = "INSERT INTO attractiontag (attractionID, tagID) VALUES (?,?) ON DUPLICATE KEY UPDATE tagID = ?";
+        String SQLattractionTag = "INSERT INTO attractiontag (attractionID, tagID) VALUES (?,?)";
         String SQLtag = "SELECT tagID FROM tag WHERE tagName = ?";
 
 
         try (Connection con = DriverManager.getConnection(url, user, pass);
              PreparedStatement pstmtAttraction = con.prepareStatement(SQLattraction);
+             PreparedStatement pstmtDelete = con.prepareStatement(SQLdeleteTags);
              PreparedStatement pstmtTag = con.prepareStatement(SQLattractionTag);
              PreparedStatement pstmtTagSelect = con.prepareStatement((SQLtag))) {
 
+            // HER OPDATERES ATTRAKTIONEN (attraction tabellen)
             pstmtAttraction.setString(1, description);
             pstmtAttraction.setInt(2, getPostalCode(by));
             pstmtAttraction.setInt(3, attID);
-            int affectedRows = pstmtAttraction.executeUpdate();
+            pstmtAttraction.executeUpdate();
+
+            //HER SLETTES DE OPRINDELIGE TAGS SÆT (attractiontac tabellen)
+            pstmtDelete.setInt(1,attID);
+            pstmtDelete.executeUpdate();
 
 
-            //iterer gennemm Taglisten og behandler hvert tag
+            //HER ITERERES GENNEM TAGLISTEN FOR AT FINDE TAG NAVN OG TAG ID
             for (Tag tag : tags) {
                 pstmtTagSelect.setString(1, tag.name()); //bruger Enum tag navnet som tagName
                 try (ResultSet rsTag = pstmtTagSelect.executeQuery()) {
                     if (rsTag.next()) {
                         int tagID = rsTag.getInt("tagID");
 
-                        //indsæt link mellem attraktion og tag i attractionTag tabellen
+                        //HER INDSÆTTES DE NYE LINK MELLEM ATTRACTIONID OG TAGID (attractionTag tabellen)
                         pstmtTag.setInt(1, attID);
                         pstmtTag.setInt(2, tagID);
-                        pstmtTag.setInt(3, tagID);//Bruges ved ON DUPLICATE KEY, dvs. hvis kombinationen allerede findes, så overskriver den med samme
-                        //værdisæt igen uden at komme med fejl
                         pstmtTag.executeUpdate();
 
                     }

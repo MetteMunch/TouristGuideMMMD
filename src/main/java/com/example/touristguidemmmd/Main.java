@@ -37,7 +37,7 @@ public class Main {
 
         System.out.println("");
 
-        ts.updateAttraction("Domkirken","Domkirke i Danmarks ældste by","Ribe",List.of(Tag.MUSEUM, Tag.FORLYSTELSE));
+        ts.updateAttraction("Domkirken","Domkirke i Danmarks ældste by med borgertårn og storkerede","Ribe",List.of(Tag.MUSEUM, Tag.MONUMENTER));
 
         for(TouristAttraction ta: ts.getListOfAttractions()){
             System.out.println(ta + " " +ta.getTagListe());
