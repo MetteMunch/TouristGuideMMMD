@@ -272,7 +272,6 @@ public class TouristRepository {
 //        }
 //    }
 
-    ///TODO: Denne er jeg ved at tilrette...mangler i forhold til korrekt opdatering af tags (de gamle skal fjernes)
     public void updateAttraction(String name, String description, String by, List<Tag> tags) {
         int attID = getByNameTouristRepository(name).getAttractionID();
         if (attID == 0) {
@@ -329,13 +328,24 @@ public class TouristRepository {
 
     }
 
-//TODO: denne mangler JDBC
     public String getDescription(String name) {
         String result = "";
-        for (TouristAttraction t : touristRepository) {
-            if (name.equalsIgnoreCase(t.getName())) {
-                result = t.getDescription();
+
+        String SQL = "SELECT attractionDesc FROM attraction WHERE attractionName = ?";
+
+        try (Connection con = DriverManager.getConnection(url,user,pass);
+             PreparedStatement pstmt = con.prepareStatement(SQL)) {
+
+            pstmt.setString(1,name);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                result = rs.getString("attractionDesc");
+            } else {
+                result = "Denne attraktion findes ikke i oversigten";
             }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
         return result;
     }

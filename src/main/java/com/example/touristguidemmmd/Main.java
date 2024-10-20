@@ -31,17 +31,19 @@ public class Main {
 //        System.out.println(ta.getTagListe());
 
         //ts.addTouristAttraction("Domkirken","Ribe Domkirke med gamle kalkmalerier og nyere glasmosaik","Ribe",List.of(Tag.MONUMENTER,Tag.MUSEUM));
-        for(TouristAttraction ta: ts.getListOfAttractions()){
-            System.out.println(ta + " " +ta.getTagListe());
-        }
+//        for(TouristAttraction ta: ts.getListOfAttractions()){
+//            System.out.println(ta + " " +ta.getTagListe());
+//        }
+//
+//        System.out.println("");
+//
+//        ts.updateAttraction("Domkirken","Domkirke i Danmarks ældste by med borgertårn og storkerede","Ribe",List.of(Tag.MUSEUM, Tag.MONUMENTER));
+//
+//        for(TouristAttraction ta: ts.getListOfAttractions()){
+//            System.out.println(ta + " " +ta.getTagListe());
+//        }
 
-        System.out.println("");
-
-        ts.updateAttraction("Domkirken","Domkirke i Danmarks ældste by med borgertårn og storkerede","Ribe",List.of(Tag.MUSEUM, Tag.MONUMENTER));
-
-        for(TouristAttraction ta: ts.getListOfAttractions()){
-            System.out.println(ta + " " +ta.getTagListe());
-        }
+        System.out.println(ts.getDescription("domkirke"));
 
 
     }
