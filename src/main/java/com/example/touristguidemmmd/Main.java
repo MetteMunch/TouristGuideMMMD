@@ -37,7 +37,15 @@ public class Main {
 
         System.out.println("");
 
-        TouristAttraction att = ts.getSpecificTouristAttraction("Domkirken");
+//        ts.addTouristAttraction("Domkirken","Ribe Domkirke med gamle kalkmalerier og nyere glasmosaik","Ribe",List.of(Tag.ARKITEKTUR, Tag.MONUMENTER));
+//
+//
+//
+//        for(TouristAttraction ta: ts.getListOfAttractions()){
+//            System.out.println(ta + " " +ta.getTagListe());
+//        }
+
+        TouristAttraction att = ts.getSpecificTouristAttraction("Hollænderhallen");
         ts.deleteAttraction(att);
 
         for(TouristAttraction ta: ts.getListOfAttractions()){
