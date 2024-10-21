@@ -2,6 +2,7 @@ package com.example.touristguidemmmd.repository;
 
 import com.example.touristguidemmmd.model.Tag;
 import com.example.touristguidemmmd.model.TouristAttraction;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
