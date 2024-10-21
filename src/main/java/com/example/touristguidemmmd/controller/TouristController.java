@@ -44,7 +44,7 @@ public class TouristController {
         TouristAttraction attraction = ts.getSpecificTouristAttraction(name);
         model.addAttribute("description",attraction.getDescription());
         model.addAttribute("by",attraction.getBy());
-        model.addAttribute("byListe",List.of("København","Frederiksberg","Aarhus","Odense","Aalborg"));
+        model.addAttribute("byListe",ts.getFullListLocations());
         model.addAttribute("tagListe",attraction.getTagListe());
         model.addAttribute("allPossibleTags",Tag.values());
         return "updateAttraction";
@@ -71,7 +71,7 @@ public class TouristController {
         List<Tag> tagsToPresent = new ArrayList<>();
         Collections.addAll(tagsToPresent, Tag.values());
         model.addAttribute("allTags", tagsToPresent);
-        model.addAttribute("byListe",List.of("København","Frederiksberg","Aarhus","Odense","Aalborg"));
+        model.addAttribute("byListe",ts.getFullListLocations());
         return "addAttraction";
     }
 

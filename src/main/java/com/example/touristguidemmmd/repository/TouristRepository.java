@@ -358,6 +358,24 @@ public class TouristRepository {
         }
     }
 
+    public List<String> getFullLocationList() {
+        List<String> allLocations = new ArrayList<>();
+
+        String SQL = "SELECT city FROM location";
+
+        try (Connection con = DriverManager.getConnection(url, user, pass);
+             Statement stmt = con.createStatement()) {
+
+            ResultSet rs = stmt.executeQuery(SQL);
+            while (rs.next()) {
+                allLocations.add(rs.getString("city"));
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return allLocations;
+    }
+
     //////////////////hjælpe metoder////////////////////
 
     //metode til at konvertere String tag navnet fra databasen til tag enum værdi

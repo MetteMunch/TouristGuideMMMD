@@ -39,6 +39,10 @@ public class TouristService {
         return tr.getDescription(name);
     }
 
+    public List<String> getFullListLocations() {
+        return tr.getFullLocationList();
+    }
+
 
     public void deleteAttraction(TouristAttraction ta) {
         tr.deleteAttraction(ta);
