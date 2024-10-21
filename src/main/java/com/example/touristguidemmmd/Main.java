@@ -9,32 +9,10 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-       TouristService ts = new TouristService(new TouristRepository());
+//       TouristService ts = new TouristService(new TouristRepository());
 
-        for(TouristAttraction ta: ts.getListOfAttractions()){
-            System.out.println(ta + " " +ta.getTagListe());
-        }
-        System.out.println("");
-        for(TouristAttraction ta: ts.getListOfAttractions()){
-            System.out.println(ta + " " +ta.getTagListe());
-        }
 
-        System.out.println("");
-
-//        List<Tag> list = ts.getListOfTags("Tivoli");
-//        for(Tag tag: list){
-//            System.out.println(tag);
-//        }
-////
-//        System.out.println("");
-//
-//        TouristAttraction ta = ts.getSpecificTouristAttraction("Aros");
-//        System.out.println(ta);
-//        System.out.println("AttID: " +ta.getAttractionID());
-//        System.out.println("By: " +ta.getBy());
-//        System.out.println(ta.getTagListe());
-
-        //ts.addTouristAttraction("Domkirken","Ribe Domkirke med gamle kalkmalerier og nyere glasmosaik","Ribe",List.of(Tag.MONUMENTER,Tag.MUSEUM));
+//        ts.addTouristAttraction("Fiskeri- og Søfartsmuseet","Fiskeri- og Søfartsmuseet er Danmarks museum for havet og som det eneste museum i landet ser vi på havet gennem briller, der både er naturhistoriske og kulturhistoriske.","Esbjerg",List.of(Tag.FORLYSTELSE,Tag.MUSEUM));
 //        for(TouristAttraction ta: ts.getListOfAttractions()){
 //            System.out.println(ta + " " +ta.getTagListe());
 //        }
