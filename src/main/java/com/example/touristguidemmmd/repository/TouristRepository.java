@@ -15,7 +15,7 @@ import java.util.Map;
 // annotation som fortæller Spring, at denne klasse har ansvar for adgang til data (fx databaseadministration)
 public class TouristRepository {
 
-    
+
     public String url = System.getenv("DB_URL");
     public String user = System.getenv("DB_USER");
     public String pass = System.getenv("DB_PASS");
