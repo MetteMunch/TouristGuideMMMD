@@ -132,7 +132,7 @@ public class TouristRepository {
         //attraktion ikke medtages flere gange, hvis den har flere tags tilknyttet.
         List<TouristAttraction> fullAttractionList = new ArrayList<>(); //den endelige liste, som returneres
 
-        try (  //try catch med ressource, som lukkes hvis ikke true
+        try (  //try catch med ressource, som lukkes automatisk når blokken forlades uanset om det om det kan køre eller smider en exception
                Connection con = DriverManager.getConnection(url, user, pass);
                Statement stmt = con.createStatement()) {
 
