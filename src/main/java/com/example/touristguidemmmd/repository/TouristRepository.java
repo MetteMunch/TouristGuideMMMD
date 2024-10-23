@@ -23,51 +23,20 @@ public class TouristRepository {
     private final List<TouristAttraction> touristRepository = new ArrayList<>();
 
     public TouristRepository() {
-//        addHardcodetDataTilListe();
     }
 
     /////////////////////CRUD/////////////////////
-    public void addHardcodetDataTilListe() {
-//        touristRepository.add(new TouristAttraction("Tivoli", "Forlystelsespark i centrum af KBH", "København", List.of(Tag.FORLYSTELSE, Tag.PARK, Tag.RESTAURANT)));
-//        touristRepository.add(new TouristAttraction("Frederiksberg Have", "Åben park midt på Frederiksberg", "Frederiksberg", List.of(Tag.PARK, Tag.NATUR)));
-//        touristRepository.add(new TouristAttraction("Københavns Museum", "Museum i KBH der dækker over københavns historie", "København", List.of(Tag.MUSEUM)));
-    }
-
     public void addTouristAttraction(String name, String description, String by, List<Tag> tags) {
         if (checkIfAttractionAlreadyExist(name)) {
             throw new IllegalArgumentException("Attraktion med dette navn eksisterer allerede");
             //denne fejlmeddelelse fanges i Controllerens POST metode (save), hvor der vil
             //komme en meddelelse til brugeren om at attraktionen allerede findes
         }
-//        String sql ="SELECT attractionID, attractionName, attractionDesc FROM touristattractiondb.attraction";
-//
-//        try(Connection con = DriverManager.getConnection(dbUrl, username, password)) {
-//            PreparedStatement ps = con.prepareStatement(sql);
-//            ResultSet rs = ps.executeQuery();
-//
-//            while(rs.next()) {
-//                TouristAttraction ta = new TouristAttraction();   //TODO: Arbejdskode
-//
-//                int attractionID = rs.getInt("attractionID");
-//                String attractionName = rs.getString("attractionName");
-//                String attractionDesc = rs.getString("attractionDesc");
-//
-//                ta.setAttractionID(attractionID);
-//                ta.setName(attractionName);
-//                ta.setDescription(attractionDesc);
-//                ta.setBy(getCityFromDB(attractionID));
-//                ta.setTagListe(getAttractionTagsFromDB(attractionID));
-//
-//                touristRepository.add()
-//            }
-//        } catch(SQLException e) {
-//            e.printStackTrace();
-//        }
+
         TouristAttraction ta = new TouristAttraction(name, description, by, tags);
         addTouristAttractionAndTagsToDB(ta);
 
         System.out.println(ta.getAttractionID());
-//        touristRepository.add(ta);
     }
 
     /*

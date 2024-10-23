@@ -26,7 +26,6 @@ public class TouristController {
 
     @GetMapping //annotation der bruges til at specificere hvilken url der skal kaldes med HTTP GET-request for at køre en given metode
     public String getFullListOfAttractions(Model model){
-//        List<TouristAttraction> fullListOfAttractions = ts.getListOfAttractions();
         List<TouristAttraction> fullListOfAttractions = ts.getTouristAttractionsFromDBConvertToObject(); //TODO Indsat for at teste. Dette virker.
         model.addAttribute("listOfAttractions",fullListOfAttractions);
         return "attractionList";
@@ -52,7 +51,6 @@ public class TouristController {
 
     @GetMapping("/{name}/tags") //denne metode kaldes ved URL attractions/Tivoli/tags
     public String showTagsOnSpecificAttraction(@PathVariable String name, Model model){ //Hvad er forskellen på PathVariable og RequestVariable?
-//        List<Tag> tagListe = ts.getListOfTags(name);
         int attractionID = ts.getAttractionIDFromAttractionName(name);
         List<Tag> tagListe = ts.getAttractionTagsFromDB(attractionID);
         model.addAttribute("tagListe",tagListe);
@@ -99,25 +97,12 @@ public class TouristController {
         List<Tag> tagsToPresent = new ArrayList<>();
         Collections.addAll(tagsToPresent, Tag.values());
         model.addAttribute("allTags", tagsToPresent);
-//        model.addAttribute("byListe",List.of("København","Frederiksberg","Aarhus","Odense","Aalborg"));
         model.addAttribute("byListe",ts.getAllCitiesFromDB());
         return "addAttraction";
     }
 
     @PostMapping("/save") //annotation der bruges til at specificere hvilken url der skal kaldes ved håndtering af en HTTP-POST-request (fx sende data via formular til server eller andet)
     public String saveAttraction(@RequestParam String name, @RequestParam String description, @RequestParam String by, @RequestParam(required = false) List<Tag> tagListe, Model model, RedirectAttributes redirectAttributes) {
-//        try {
-//            if (tagListe == null ||tagListe.isEmpty()) {
-//                redirectAttributes.addFlashAttribute("tagsErrorMessage", "At least one tag is required. No changes were saved. L.111");
-//                return "redirect:/attractions";
-//            }
-//            ts.addTouristAttraction(name, description, by, tagListe);
-//            return "redirect:/attractions";
-//        } catch (IllegalArgumentException e) {
-//            model.addAttribute("errorMessage",e.getMessage()+"L117");
-//            //her fanges og vises fejlmeddelelse fra Repository metoden
-//            return "addAttraction";
-//        }
         if (tagListe == null ||tagListe.isEmpty()) {
                 redirectAttributes.addFlashAttribute("tagsErrorMessage", "At least one tag is required. No changes were saved. L.111");
                 return "redirect:/attractions";
@@ -129,8 +114,6 @@ public class TouristController {
 
     @PostMapping("/delete/{name}")
     public String deleteAttraction(@PathVariable String name) {
-//        TouristAttraction ta = ts.getSpecificTouristAttraction(name);
-//        ts.deleteAttraction(ta);
         ts.deleteAttractionFromDB(name);
         return "redirect:/attractions";
     }
