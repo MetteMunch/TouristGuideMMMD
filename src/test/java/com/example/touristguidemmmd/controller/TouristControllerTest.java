@@ -72,17 +72,17 @@ class TouristControllerTest {
                 .andExpect(content().string(containsString("Tags")));
     }
 
-//    @Test
-//    void goToEditAttraction() throws Exception {
-//        mockMvc.perform(get("/attractions/"+touristAttraction.getName()+"/edit"))
-//                .andExpect(status().isOk())
-//                .andExpect(view().name("updateAttraction"))
-//                .andExpect(model().attribute("description", touristAttraction.getDescription()))
-//                .andExpect(model().attribute("by", touristAttraction.getBy()))
-//                .andExpect(model().attribute("byListe", List.of("København", "Frederiksberg", "Aarhus", "Odense", "Aalborg")))
-//                .andExpect(model().attribute("tagListe", touristAttraction.getTagListe()))
-//                .andExpect(model().attribute("allPossibleTags", Tag.values()));
-//    }
+    @Test
+    void goToEditAttraction() throws Exception {
+        mockMvc.perform(get("/attractions/"+touristAttraction.getName()+"/edit"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("updateAttraction"))
+                .andExpect(model().attribute("description", touristAttraction.getDescription()))
+                .andExpect(model().attribute("by", touristAttraction.getBy()))
+                .andExpect(model().attribute("byListe", touristService.getAllCitiesFromDB()))
+                .andExpect(model().attribute("tagListe", touristAttraction.getTagListe()))
+                .andExpect(model().attribute("allPossibleTags", Tag.values()));
+    }
 
     @Test
     void showSpecificAttraction() throws Exception {
@@ -107,13 +107,13 @@ class TouristControllerTest {
                 .andExpect(redirectedUrl("/attractions"));
     }
 
-//    @Test
-//    void addAttraction() throws Exception {
-//        mockMvc.perform(get("/attractions/add")).andExpect(status().isOk())
-//                .andExpect(model().attribute("allTags", List.of(Tag.values())))
-//                .andExpect(model().attribute("byListe", List.of("København", "Frederiksberg", "Aarhus", "Odense", "Aalborg")))
-//                .andExpect(view().name("addAttraction"));
-//    }
+    @Test
+    void addAttraction() throws Exception {
+        mockMvc.perform(get("/attractions/add")).andExpect(status().isOk())
+                .andExpect(model().attribute("allTags", List.of(Tag.values())))
+                .andExpect(model().attribute("byListe", touristService.getAllCitiesFromDB()))
+                .andExpect(view().name("addAttraction"));
+    }
 
     @Test
     void saveAttraction() throws Exception {

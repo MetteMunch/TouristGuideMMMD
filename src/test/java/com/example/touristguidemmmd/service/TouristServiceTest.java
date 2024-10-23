@@ -18,6 +18,9 @@ import java.util.Arrays;
 import java.util.List;
 
 @ActiveProfiles("unittest")
+/*
+Denne .properties fil er tom, men er krævet her, da der ellers vil komme konflikt med definitionerne i test.properties, der bruges til integrationstest.
+ */
 @SpringBootTest
 class TouristServiceTest {
 
