@@ -148,7 +148,8 @@ public class TouristRepository {
     ############################################################
      */
     public int getAttractionIDFromAttractionName(String name) {
-        String sql = "SELECT attractionID FROM touristattractiondb.attraction WHERE LOWER(attractionName)=LOWER(?)";
+//        String sql = "SELECT attractionID FROM touristattractiondb.attraction WHERE LOWER(attractionName)=LOWER(?)";
+        String sql = "SELECT attractionID FROM attraction WHERE LOWER(attractionName)=LOWER(?)";
         //LOWER() er egentlig bare .toLowerCase. Bruges som equalsIgnoreCase() i det her tilfælde.
         int idToReturn = -1;
 
