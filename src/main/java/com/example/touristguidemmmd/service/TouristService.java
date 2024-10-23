@@ -17,6 +17,37 @@ public class TouristService {
     }
 
     ////////////////////CRUD//////////////////////////////
+
+    //*** TEST ***
+    public List<Tag> getAttractionTagsFromDB(int attractionID) {
+        return tr.getAttractionTagsFromDB(attractionID);
+    }
+    public String getCityFromDB(int attractionID) {
+        return tr.getCityFromDB(attractionID);
+    }
+    public void addTouristAttractionToDB(TouristAttraction ta) {
+        tr.addTouristAttractionAndTagsToDB(ta);
+    }
+    public void addTouristAttractionTagsToDB(TouristAttraction ta) {
+        tr.addTouristAttractionTagsToDB(ta);
+    }
+    public int getPostalCodeFromCityDB(TouristAttraction ta) {
+        return tr.getPostalCodeFromCityDB(ta);
+    }
+    public List<TouristAttraction> getTouristAttractionsFromDBConvertToObject() {
+        return tr.getTouristAttractionsFromDBConvertToObject();
+    }
+    public List<String> getAllCitiesFromDB() {
+        return tr.getAllCitiesFromDB();
+    }
+    public int getAttractionIDFromAttractionName(String name) {
+        return tr.getAttractionIDFromAttractionName(name);
+    }
+    public void deleteAttractionFromDB(String name) {
+        tr.deleteAttractionFromDB(name);
+    }
+
+    //------------------------------------
     public void addTouristAttraction(String name, String description, String by, List<Tag> tags) {
         tr.addTouristAttraction(name, description, by, tags);
     }

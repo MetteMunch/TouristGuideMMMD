@@ -10,15 +10,30 @@ public class TouristAttraction {
     private String by;
     private List<Tag> tagListe;
 
+    //TEST - Ved ikke om det er nyttigt at gemme et eller andet sted.
+    private int attractionID;
+
 
     public TouristAttraction(String name, String description, String by, List<Tag> tags){
         this.name = name;
         this.description = description;
         this.by = by;
         this.tagListe = new ArrayList<>(tags);
+        attractionID = -1;
     }
     public TouristAttraction() {
 
+    }
+    //TEST attractionID
+    public int getAttractionID() {
+        if (attractionID == -1) {
+            throw new IllegalArgumentException("The attraction ID for "+this.name+" is invalid.");
+        } else {
+            return attractionID;
+        }
+    }
+    public void setAttractionID(int newID) {
+        this.attractionID = newID;
     }
 
     public String getName(){
