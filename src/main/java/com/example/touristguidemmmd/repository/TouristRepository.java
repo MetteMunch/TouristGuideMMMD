@@ -45,9 +45,6 @@ public class TouristRepository {
     ################################################################
      */
     public void addTouristAttractionAndTagsToDB(TouristAttraction ta) {
-        if (checkIfAttractionAlreadyExist(ta.getName())) {
-            throw new IllegalArgumentException("There is already an attraction with that name.");
-        }
         String sqlAddAttraction = "INSERT INTO attraction(attractionName, attractionDesc, postalcode) VALUES(?,?,?)";
 
         try (Connection con = DriverManager.getConnection(dbUrl, username, password)) {

@@ -145,51 +145,53 @@ void setUp() throws SQLException {
     /*
     -------***DELETE***-------
      */
-    @Test
-    void deleteAttraction() {
-            String attractionName = "";
-            int attractionID = -1; // Vi bruger en settermetode til korrekt at sette ID fra test-databasen. I programmet defaulter den til -1 for debugging formål.
-            int expectedSQLSizeBeforeDelete = 2;
-            int expectedSQLSizeAfterDelete = 1;
-
-            try (Connection con = DriverManager.getConnection(url, username, password)) {
-                //Tjekker om attraction eksisterer
-                String sql = "SELECT attractionID, attractionName, attractionDesc FROM attraction WHERE attractionID=? AND attractionName=?";
-                PreparedStatement ps = con.prepareStatement(sql);
-                ps.setInt(1, 1);
-                ps.setString(2, "Eiffel Tower");
-                ResultSet rs = ps.executeQuery();
-                if (rs.next()) {
-                    attractionName = rs.getString("attractionName");
-                    attractionID = rs.getInt("attractionID");
-                    assertEquals("Eiffel Tower", attractionName);  // Check the attraction name
-                    assertEquals(1, attractionID);  // Check the attraction ID
-                }
-
-                //Vi tæller antallet af records før vi laver vores delete-operation.
-                String sqlCountRecords = "SELECT COUNT(*) AS count FROM attraction";
-                PreparedStatement psCountBeforeDelete = con.prepareStatement(sqlCountRecords);
-                ResultSet rsCountBeforeDelete = psCountBeforeDelete.executeQuery();
-                if (rsCountBeforeDelete.next()) {
-                    assertEquals(expectedSQLSizeBeforeDelete, rsCountBeforeDelete.getInt("count"));
-                }
-
-                //Vi sletter Eiffel tårnet fra test-databasen.
-                String sqlDelete = "DELETE FROM attraction WHERE attractionID=? AND attractionName=?";
-                PreparedStatement psDelete = con.prepareStatement(sqlDelete);
-                psDelete.setInt(1, attractionID);
-                psDelete.setString(2, attractionName);
-                psDelete.executeUpdate();  // Execute delete
-
-                //Vi tæller og asserter om vores test-database er blevet 1 mindre.
-                PreparedStatement psCountAfterDelete = con.prepareStatement(sqlCountRecords);
-                ResultSet rsCountAfterDelete = psCountAfterDelete.executeQuery();
-                if (rsCountAfterDelete.next()) {
-                    assertEquals(expectedSQLSizeAfterDelete, rsCountAfterDelete.getInt("count"));
-                }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+//    @Test
+//    void deleteAttraction() { //TODO: Lav om, der bliver ikke tjekket på den egentlige metode.
+//            String attractionName = "";
+//            int attractionID = -1; // Vi bruger en settermetode til korrekt at sette ID fra test-databasen. I programmet defaulter den til -1 for debugging formål.
+//            int expectedSQLSizeBeforeDelete = 2;
+//            int expectedSQLSizeAfterDelete = 1;
+//
+//            try (Connection con = DriverManager.getConnection(url, username, password)) {
+//                //Tjekker om attraction eksisterer
+//                String sql = "SELECT attractionID, attractionName, attractionDesc FROM attraction WHERE attractionID=? AND attractionName=?";
+//                PreparedStatement ps = con.prepareStatement(sql);
+//                ps.setInt(1, 1);
+//                ps.setString(2, "Eiffel Tower");
+//                ResultSet rs = ps.executeQuery();
+//                if (rs.next()) {
+//                    attractionName = rs.getString("attractionName");
+//                    attractionID = rs.getInt("attractionID");
+////                    assertEquals("Eiffel Tower", attractionName);  // Check the attraction name
+////                    assertEquals(1, attractionID);  // Check the attraction ID
+//                }
+//
+//                //Vi tæller antallet af records før vi laver vores delete-operation.
+//                String sqlCountRecords = "SELECT COUNT(*) AS count FROM attraction";
+//                PreparedStatement psCountBeforeDelete = con.prepareStatement(sqlCountRecords);
+//                ResultSet rsCountBeforeDelete = psCountBeforeDelete.executeQuery();
+//                if (rsCountBeforeDelete.next()) {
+//                    assertEquals(expectedSQLSizeBeforeDelete, rsCountBeforeDelete.getInt("count"));
+//                }
+//
+//                //Vi sletter Eiffel tårnet fra test-databasen.
+//                String sqlDelete = "DELETE FROM attraction WHERE attractionID=? AND attractionName=?";
+//                PreparedStatement psDelete = con.prepareStatement(sqlDelete);
+//                psDelete.setInt(1, attractionID);
+//                psDelete.setString(2, attractionName);
+//                psDelete.executeUpdate();  // Execute delete
+////                touristRepository.deleteAttractionFromDB(attractionName);
+//
+//
+//                //Vi tæller og asserter om vores test-database er blevet 1 mindre.
+//                PreparedStatement psCountAfterDelete = con.prepareStatement(sqlCountRecords);
+//                ResultSet rsCountAfterDelete = psCountAfterDelete.executeQuery();
+//                if (rsCountAfterDelete.next()) {
+//                    assertEquals(expectedSQLSizeAfterDelete, rsCountAfterDelete.getInt("count"));
+//                }
+//
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
 }
