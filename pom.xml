@@ -79,6 +79,16 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
+            <!-- Surefire plugin til test -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version> <!-- Du kan bruge den nyeste stabile version -->
+                <configuration>
+                    <!-- Konfiguration kan være tom eller tilpasses -->
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
